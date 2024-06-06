@@ -13,6 +13,7 @@ import (
 
 func (actor *Actor) Update(deltaTime time.Duration) {
 	actor.onUpdate(deltaTime)
+	actor.runActions(deltaTime)
 
 	tools.ForEach(actor.Children, func(child *Actor) {
 		child.Update(deltaTime)

@@ -7,6 +7,25 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+type ActorActionState string
+
+const (
+	ActorActionState_INIT       ActorActionState = "ActorActionState_INIT"
+	ActorActionState_READY      ActorActionState = "ActorActionState_READY"
+	ActorActionState_PROCESSING ActorActionState = "ActorActionState_PROCESSING"
+	ActorActionState_STOP       ActorActionState = "ActorActionState_STOP"
+)
+
+type ActorInitAction = func(actor *Actor)
+type ActorWhenCondition = func(actor *Actor) bool
+type ActorActionDone = func()
+type ActorDoAction = func(deltaTime time.Duration, actor *Actor, done ActorActionDone)
+type ActorAction struct {
+	index int
+	when  ActorWhenCondition
+	do    ActorDoAction
+}
+
 type ActorEventHandlers struct {
 	onMouseDown  func(mousePos rl.Vector2) bool // True to bubble, otherwise false
 	onMouseUp    func(mousePos rl.Vector2) bool // True to bubble, otherwise false
@@ -31,12 +50,17 @@ type Actor struct {
 	onUpdate func(deltaTime time.Duration)
 
 	events ActorEventHandlers
+
+	actorActionState ActorActionState
+	actions          []ActorAction
 }
 
 /** Builder Methods **/
 
 type ActorBuilder struct {
-	actor Actor
+	actor       Actor
+	ignorePause bool
+	hasActions  bool
 }
 
 func BuildActor() *ActorBuilder {
@@ -58,7 +82,11 @@ func BuildActor() *ActorBuilder {
 				defined:      make(map[QueryAttribute]func(params interface{})),
 				onKeyPressed: make(map[int32]func() bool),
 			},
+			actions:          nil,
+			actorActionState: ActorActionState_INIT,
 		},
+		ignorePause: false,
+		hasActions:  false,
 	}
 }
 
@@ -81,6 +109,20 @@ func (builder *ActorBuilder) WithOnUpdate(onUpdate func(deltaTime time.Duration)
 }
 func (builder *ActorBuilder) WithColor(color rl.Color) *ActorBuilder {
 	builder.actor.Color = color
+	return builder
+}
+func (builder *ActorBuilder) WithAllowUpdateDuringPause() *ActorBuilder {
+	builder.actor.AddQueryAttr(queryAttribute_UPDATES_WHEN_PAUSED)
+	return builder
+}
+
+func (builder *ActorBuilder) WithAction(when ActorWhenCondition, do ActorDoAction) *ActorBuilder {
+	if !builder.hasActions {
+		builder.actor.actions = make([]ActorAction, 0)
+		builder.hasActions = true
+	}
+
+	builder.actor.actions = append(builder.actor.actions, ActorAction{len(builder.actor.actions), when, do})
 	return builder
 }
 

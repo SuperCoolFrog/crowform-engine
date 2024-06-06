@@ -4,6 +4,7 @@ import (
 	"crowform/pkg"
 	"log"
 	"testing"
+	"time"
 )
 
 func TestActorQueryIncludesSelf(t *testing.T) {
@@ -109,4 +110,70 @@ func TestActorAddChildZDefault(t *testing.T) {
 	}
 
 	log.Output(1, "[PASS]: TestActorAddChildZDefault")
+}
+
+func TestActorActionsRun(t *testing.T) {
+	expected := "ACTION RAN"
+	actual := "ACTION DID NOT RUN"
+
+	a1 := pkg.BuildActor().
+		WithAction(
+			func(actor *pkg.Actor) bool {
+				return true
+			},
+			func(deltaTime time.Duration, actor *pkg.Actor, done pkg.ActorActionDone) {
+				actual = expected
+				done()
+			}).
+		Build()
+
+	a1.ActionsSetAsReady()
+	a1.Update(time.Second)
+
+	if actual != expected {
+		t.Fatalf("Actions were not run actual %s, expected %s", actual, expected)
+	}
+
+	log.Output(1, "[PASS]: TestActorActionsRun")
+}
+
+func TestActorActionsRunInSequence(t *testing.T) {
+	expected := []int{1, 2, 3}
+	actual := make([]int, 0)
+
+	a1 := pkg.BuildActor().
+		WithAction(
+			func(actor *pkg.Actor) bool {
+				return true
+			},
+			func(deltaTime time.Duration, actor *pkg.Actor, done pkg.ActorActionDone) {
+				actual = append(actual, 1)
+				done()
+			}).
+		WithAction(
+			func(actor *pkg.Actor) bool {
+				return true
+			},
+			func(deltaTime time.Duration, actor *pkg.Actor, done pkg.ActorActionDone) {
+				actual = append(actual, 2)
+				done()
+			}).
+		WithAction(
+			func(actor *pkg.Actor) bool {
+				return true
+			},
+			func(deltaTime time.Duration, actor *pkg.Actor, done pkg.ActorActionDone) {
+				actual = append(actual, 3)
+				done()
+			}).
+		Build()
+
+	a1.ActionsSetAsReady()
+	a1.Update(time.Second)
+
+	if actual[0] != 1 || actual[1] != 2 || actual[2] != 3 {
+		t.Fatalf("Actions were not run in sequence actual %v, expected %v", actual, expected)
+	}
+
+	log.Output(1, "[PASS]: TestActorActionsRunInSequence")
 }
