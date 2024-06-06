@@ -219,3 +219,39 @@ func TestPubAllSubs(t *testing.T) {
 
 	log.Output(1, "[PASS]: TestPubAllSubs")
 }
+
+func TestRemoveChild(t *testing.T) {
+	expected := 0
+
+	a1 := pkg.BuildActor().Build()
+	c1 := pkg.BuildActor().Build()
+
+	a1.AddChild(c1)
+	a1.RemoveChild(c1)
+
+	actual := len(a1.Children)
+
+	if actual != expected {
+		t.Fatalf("Failed Remove children actual children count %d, expected %d", actual, expected)
+	}
+
+	log.Output(1, "[PASS]: TestRemoveChild")
+}
+
+func TestRemoveSelf(t *testing.T) {
+	expected := 0
+
+	a1 := pkg.BuildActor().Build()
+	c1 := pkg.BuildActor().Build()
+
+	a1.AddChild(c1)
+	c1.RemoveSelf()
+
+	actual := len(a1.Children)
+
+	if actual != expected {
+		t.Fatalf("Failed Remove self actual parent children count %d, expected %d", actual, expected)
+	}
+
+	log.Output(1, "[PASS]: TestRemoveSelf")
+}

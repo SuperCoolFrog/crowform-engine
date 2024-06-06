@@ -184,3 +184,24 @@ func (actor *Actor) AddSprite(sprite *Sprite) {
 func (me *Actor) RemoveSprite(spriteToRemove *Sprite) {
 	me.Sprites = tools.RemoveAll(me.Sprites, spriteToRemove)
 }
+
+func (actor *Actor) HasParent() bool {
+	return actor.parent != nil
+}
+
+func (actor *Actor) GetParent() *Actor {
+	return actor.parent
+}
+
+func (actor *Actor) RemoveChild(child *Actor) {
+	actor.Children = tools.Remove(actor.Children, child)
+	child.parent = nil
+}
+
+func (actor *Actor) RemoveSelf() {
+	if actor.parent == nil {
+		return
+	}
+
+	actor.parent.RemoveChild(actor)
+}
