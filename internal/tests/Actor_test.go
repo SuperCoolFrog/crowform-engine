@@ -177,3 +177,45 @@ func TestActorActionsRunInSequence(t *testing.T) {
 
 	log.Output(1, "[PASS]: TestActorActionsRunInSequence")
 }
+
+func TestPubSub(t *testing.T) {
+	expected := "SUB CALLED"
+	actual := "SUB NOT CALLED"
+
+	a1 := pkg.BuildActor().Build()
+	a1.Subscribe("1", func() {
+		actual = expected
+	})
+
+	a1.Publish("1")
+
+	if actual != expected {
+		t.Fatalf("Failed PubSub actual '%s', expected '%s'", actual, expected)
+	}
+
+	log.Output(1, "[PASS]: TestPubSub")
+}
+
+func TestPubAllSubs(t *testing.T) {
+	expected := 3
+	actual := 0
+
+	a1 := pkg.BuildActor().Build()
+	a1.Subscribe("1", func() {
+		actual++
+	})
+	a1.Subscribe("1", func() {
+		actual++
+	})
+	a1.Subscribe("1", func() {
+		actual++
+	})
+
+	a1.Publish("1")
+
+	if actual != expected {
+		t.Fatalf("Failed Pub AllSubs actual times %d, expected times %d", actual, expected)
+	}
+
+	log.Output(1, "[PASS]: TestPubAllSubs")
+}

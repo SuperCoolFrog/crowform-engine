@@ -53,6 +53,8 @@ type Actor struct {
 
 	actorActionState ActorActionState
 	actions          []ActorAction
+
+	subscribers map[string][]func()
 }
 
 /** Builder Methods **/
@@ -84,6 +86,7 @@ func BuildActor() *ActorBuilder {
 			},
 			actions:          nil,
 			actorActionState: ActorActionState_INIT,
+			subscribers:      map[string][]func(){},
 		},
 		ignorePause: false,
 		hasActions:  false,
