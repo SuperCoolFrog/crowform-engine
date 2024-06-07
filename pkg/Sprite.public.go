@@ -7,6 +7,9 @@ import (
 )
 
 func (sprite *Sprite) Draw() {
-	texture := cache.GetTexture2d(sprite.textureFileName)
-	rl.DrawTexturePro(texture, sprite.srcRect, sprite.DestRect, sprite.Origin, sprite.rotation, sprite.colorTint)
+	if sprite.texture == nil {
+		texture := cache.GetTexture2d(sprite.textureFileName)
+		sprite.texture = &texture
+	}
+	rl.DrawTexturePro(*sprite.texture, sprite.srcRect, sprite.DestRect, sprite.Origin, sprite.rotation, sprite.colorTint)
 }
