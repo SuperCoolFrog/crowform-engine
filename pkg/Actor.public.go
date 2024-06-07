@@ -14,6 +14,7 @@ import (
 func (actor *Actor) Update(deltaTime time.Duration) {
 	actor.onUpdate(deltaTime)
 	actor.runActions(deltaTime)
+	actor.updateAnimations(deltaTime)
 
 	tools.ForEach(actor.Children, func(child *Actor) {
 		child.Update(deltaTime)
@@ -212,4 +213,12 @@ func (actor *Actor) ShowBorder() {
 
 func (actor *Actor) HideBorder() {
 	actor.showBorder = false
+}
+
+func (actor *Actor) AddAnimation(sprite *Animation) {
+	actor.Animations = append(actor.Animations, sprite)
+}
+
+func (actor *Actor) RemoveAnimation(anim *Animation) {
+	actor.Animations = tools.Remove(actor.Animations, anim)
 }

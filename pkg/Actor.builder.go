@@ -39,6 +39,7 @@ type ActorEventHandlers struct {
 type Actor struct {
 	Children         []*Actor
 	Sprites          []*Sprite
+	Animations       []*Animation
 	QueryAttributes  []QueryAttribute
 	CollisionElement tools.Maybe[rl.Rectangle]
 	Scene            *Scene

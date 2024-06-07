@@ -17,6 +17,16 @@ func (actor *Actor) draw() {
 	}
 }
 
+func (actor *Actor) updateAnimations(deltaTime time.Duration) {
+	for i := range actor.Animations {
+		if i >= len(actor.Animations) {
+			return
+		}
+		anim := actor.Animations[i]
+		anim.Update(deltaTime)
+	}
+}
+
 func (actor *Actor) doActions(deltaTime time.Duration, allActions []ActorAction, idx int, onComplete func()) {
 	if idx > len(allActions)-1 {
 		onComplete()

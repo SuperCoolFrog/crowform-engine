@@ -60,8 +60,8 @@ func (animation *Animation) updateFrame() {
 
 	frame := animation.frames[animation.currentFrameIdx]
 
-	animation.srcRect.X = frame.X
-	animation.srcRect.Y = frame.Y
+	animation.srcRect.X = animation.srcRect.Width * frame.X
+	animation.srcRect.Y = animation.srcRect.Height * frame.Y
 }
 
 func (animation *Animation) Reset() {

@@ -15,8 +15,8 @@ func TestAnimationInitialFrameIdx(t *testing.T) {
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
 		WithFrame(rl.Vector2{X: 0, Y: 0}).
-		WithFrame(rl.Vector2{X: 10, Y: 10}).
-		WithFrame(rl.Vector2{X: 20, Y: 20}).
+		WithFrame(rl.Vector2{X: 1, Y: 3}).
+		WithFrame(rl.Vector2{X: 2, Y: 4}).
 		Build()
 
 	actualIdx := anim.GetCurrentFrameIdx()
@@ -34,8 +34,8 @@ func TestAnimationFrameIdxUpdate(t *testing.T) {
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
 		WithFrame(rl.Vector2{X: 0, Y: 0}).
-		WithFrame(rl.Vector2{X: 10, Y: 10}).
-		WithFrame(rl.Vector2{X: 20, Y: 20}).
+		WithFrame(rl.Vector2{X: 1, Y: 3}).
+		WithFrame(rl.Vector2{X: 2, Y: 4}).
 		Build()
 
 	anim.Update(time.Second)
@@ -55,8 +55,8 @@ func TestAnimationFrameIdxLoops(t *testing.T) {
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
 		WithFrame(rl.Vector2{X: 0, Y: 0}).
-		WithFrame(rl.Vector2{X: 10, Y: 10}).
-		WithFrame(rl.Vector2{X: 20, Y: 20}).
+		WithFrame(rl.Vector2{X: 1, Y: 3}).
+		WithFrame(rl.Vector2{X: 2, Y: 4}).
 		Build()
 
 	anim.Update(time.Second)
@@ -78,8 +78,8 @@ func TestAnimationInitialSrcRect(t *testing.T) {
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
 		WithFrame(rl.Vector2{X: 0, Y: 0}).
-		WithFrame(rl.Vector2{X: 10, Y: 10}).
-		WithFrame(rl.Vector2{X: 20, Y: 20}).
+		WithFrame(rl.Vector2{X: 1, Y: 3}).
+		WithFrame(rl.Vector2{X: 2, Y: 4}).
 		Build()
 
 	actualRect := anim.GetCurrentSrcRect()
@@ -97,16 +97,24 @@ func TestAnimationUpdateSrcRect(t *testing.T) {
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
 		WithFrame(rl.Vector2{X: 0, Y: 0}).
-		WithFrame(rl.Vector2{X: 10, Y: 10}).
-		WithFrame(rl.Vector2{X: 20, Y: 20}).
+		WithFrame(rl.Vector2{X: 1, Y: 3}).
+		WithFrame(rl.Vector2{X: 2, Y: 4}).
 		Build()
 
 	anim.Update(time.Second)
 
 	actualRect := anim.GetCurrentSrcRect()
 
-	if actualRect.X != 10 || actualRect.Y != 10 {
-		t.Fatalf("Failed Src Rect Actual {X: %f, Y: %f}, expected {X: 10, Y: 10},", actualRect.X, actualRect.Y)
+	if actualRect.X != 10 || actualRect.Y != 30 {
+		t.Fatalf("Failed Update1 Src Rect Actual {X: %f, Y: %f}, expected {X: 10, Y: 30},", actualRect.X, actualRect.Y)
+	}
+
+	anim.Update(time.Second)
+
+	actualRect = anim.GetCurrentSrcRect()
+
+	if actualRect.X != 20 || actualRect.Y != 40 {
+		t.Fatalf("Failed Update2 Src Rect Actual {X: %f, Y: %f}, expected {X: 10, Y: 30},", actualRect.X, actualRect.Y)
 	}
 
 	log.Output(1, "[PASS]: TestAnimationUpdateSrcRect")
@@ -118,8 +126,8 @@ func TestAnimationUpdateSrcRectLoops(t *testing.T) {
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
 		WithFrame(rl.Vector2{X: 0, Y: 0}).
-		WithFrame(rl.Vector2{X: 10, Y: 10}).
-		WithFrame(rl.Vector2{X: 20, Y: 20}).
+		WithFrame(rl.Vector2{X: 1, Y: 3}).
+		WithFrame(rl.Vector2{X: 2, Y: 4}).
 		Build()
 
 	anim.Update(time.Second)
