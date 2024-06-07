@@ -87,6 +87,8 @@ func (game *Game) Start() {
 
 		rl.EndDrawing()
 	}
+
+	cache.UnloadTextureCache()
 }
 
 func (game *Game) AddScene(scene *Scene) {

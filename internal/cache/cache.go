@@ -29,3 +29,9 @@ func GetTexture2d(filename string) rl.Texture2D {
 
 	return nuTexture
 }
+
+func UnloadTextureCache() {
+	for _, texture := range textures {
+		rl.UnloadTexture(texture)
+	}
+}
