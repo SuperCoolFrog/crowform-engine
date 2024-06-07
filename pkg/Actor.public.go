@@ -39,10 +39,44 @@ func (actor *Actor) Draw() {
 
 /** // Loop Func **/
 
+func (actor *Actor) GetElement() rl.Rectangle {
+	return actor.element
+}
+
+// Shorthand for actor.GetElement().Height
+func (actor *Actor) H() float32 {
+	return actor.element.Height
+}
+
+// Shorthand for actor.GetElement().Width
+func (actor *Actor) W() float32 {
+	return actor.element.Width
+}
+
+// Shorthand for actor.GetPosition().X
+func (actor *Actor) X() float32 {
+	return actor.GetPosition().X
+}
+
+// Shorthand for actor.GetPosition().Y
+func (actor *Actor) Y() float32 {
+	return actor.GetPosition().Y
+}
+
+// Updates Element Width
+func (actor *Actor) SetWidth(width float32) {
+	actor.element.Width = width
+}
+
+// Updates Element Width
+func (actor *Actor) SetHeight(height float32) {
+	actor.element.Height = height
+}
+
 // Updates Element Width, Height
 func (actor *Actor) SetWidthHeight(width float32, height float32) {
-	actor.element.Width = width
-	actor.element.Height = height
+	actor.SetWidth(width)
+	actor.SetHeight(height)
 }
 
 func (actor *Actor) GetPosition() rl.Vector3 {
@@ -54,9 +88,12 @@ func (actor *Actor) SetX(x float32) {
 	actor.element.X = x
 	actor.position.X = x
 
-	pos := actor.windowPosition()
+	pos := actor.getRelativePosition()
 
 	tools.ForEach(actor.Sprites, func(s *Sprite) {
+		s.DestRect.X = pos.X
+	})
+	tools.ForEach(actor.Animations, func(s *Animation) {
 		s.DestRect.X = pos.X
 	})
 }
@@ -66,9 +103,12 @@ func (actor *Actor) SetY(y float32) {
 	actor.element.Y = y
 	actor.position.Y = y
 
-	pos := actor.windowPosition()
+	pos := actor.getRelativePosition()
 
 	tools.ForEach(actor.Sprites, func(s *Sprite) {
+		s.DestRect.Y = pos.Y
+	})
+	tools.ForEach(actor.Animations, func(s *Animation) {
 		s.DestRect.Y = pos.Y
 	})
 }
@@ -102,14 +142,14 @@ func (actor *Actor) AddChild(child *Actor) {
 		// Set to max Z
 		max := tools.MaxFloat32Of(
 			tools.MapSlice(actor.Children, func(c *Actor) float32 {
-				return c.windowPosition().Z
+				return c.getRelativePosition().Z
 			})...)
 		child.position.Z = max + 1
 	}
 
 	actor.Children = tools.InsertSorted(actor.Children, child,
 		func(item *Actor) bool {
-			return item.windowPosition().Z > child.windowPosition().Z
+			return item.getRelativePosition().Z > child.getRelativePosition().Z
 		})
 	child.parent = actor
 }
@@ -175,7 +215,7 @@ func (actor *Actor) IsQryType(qryType QueryAttribute) bool {
 }
 
 func (actor *Actor) AddSprite(sprite *Sprite) {
-	position := actor.windowPosition()
+	position := actor.getRelativePosition()
 	sprite.DestRect.X = position.X
 	sprite.DestRect.Y = position.Y
 
@@ -215,9 +255,9 @@ func (actor *Actor) HideBorder() {
 }
 
 func (actor *Actor) AddAnimation(animation *Animation) {
-	position := actor.windowPosition()
-	animation.DestRect.X += position.X
-	animation.DestRect.Y += position.Y
+	position := actor.getRelativePosition()
+	animation.DestRect.X = position.X
+	animation.DestRect.Y = position.Y
 
 	actor.Animations = append(actor.Animations, animation)
 }

@@ -93,13 +93,13 @@ func (actor *Actor) getCollisionElement() rl.Rectangle {
 	return e
 }
 
-func (actor *Actor) windowPosition() (position rl.Vector3) {
+func (actor *Actor) getRelativePosition() (position rl.Vector3) {
 	position.X = actor.position.X
 	position.Y = actor.position.Y
 	position.Z = actor.position.Z
 
 	if actor.parent != nil {
-		parentPos := actor.parent.windowPosition()
+		parentPos := actor.parent.getRelativePosition()
 
 		position.X += parentPos.X
 		position.Y += parentPos.Y
@@ -127,7 +127,7 @@ func (me *Actor) resortChildrenByZ() {
 			}
 
 			nu = tools.InsertSorted(me.Children, child, func(item *Actor) bool {
-				return item.windowPosition().Z > child.windowPosition().Z
+				return item.getRelativePosition().Z > child.getRelativePosition().Z
 			})
 		}
 	}
@@ -137,4 +137,10 @@ func (me *Actor) resortChildrenByZ() {
 	tools.ForEach(nu, func(a *Actor) {
 		me.AddChild(a)
 	})
+}
+
+func (actor *Actor) updateRelativePositions() {
+	// Update Sprites and animations Origin based on getRelativePosition
+	// Add this function to all updates to actor position
+	// Write Tests
 }

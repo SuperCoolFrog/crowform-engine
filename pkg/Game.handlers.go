@@ -44,7 +44,7 @@ func (game *Game) handleMouseLeftClick(mousePos rl.Vector2) {
 
 	sort.Slice(clickActors, func(i, j int) bool {
 		// Sort descending
-		return clickActors[i].windowPosition().Z > clickActors[j].windowPosition().Z
+		return clickActors[i].getRelativePosition().Z > clickActors[j].getRelativePosition().Z
 	})
 
 	for _, actor := range clickActors {
@@ -71,7 +71,7 @@ func (game *Game) handleMouseLeftRelease(mousePos rl.Vector2) {
 
 	sort.Slice(clickActors, func(i, j int) bool {
 		// Sort descending
-		return clickActors[i].windowPosition().Z > clickActors[j].windowPosition().Z
+		return clickActors[i].getRelativePosition().Z > clickActors[j].getRelativePosition().Z
 	})
 
 	for _, actor := range clickActors {
@@ -112,8 +112,8 @@ func (game *Game) handleMouseEnter(mousePos rl.Vector2) {
 				break
 			}
 
-			zIndexCurrent := mouseOverTarget.windowPosition().Z
-			zIndex := actor.windowPosition().Z
+			zIndexCurrent := mouseOverTarget.getRelativePosition().Z
+			zIndex := actor.getRelativePosition().Z
 
 			if zIndex > zIndexCurrent {
 				if mouseOverTarget.IsQryType(queryAttribute_RECEIVES_MOUSE_EXIT_EVENT) {
