@@ -57,8 +57,8 @@ func (builder *AnimationBuilder) WithColorTint(color rl.Color) *AnimationBuilder
 	builder.colorTint = color
 	return builder
 }
-func (builder *AnimationBuilder) WithFrame(frameXY rl.Vector2) *AnimationBuilder {
-	builder.frames = append(builder.frames, frameXY)
+func (builder *AnimationBuilder) WithFrame(frameX float32, frameY float32) *AnimationBuilder {
+	builder.frames = append(builder.frames, rl.Vector2{X: frameX, Y: frameY})
 	return builder
 }
 func (builder *AnimationBuilder) WithPlayOnce(then func()) *AnimationBuilder {

@@ -5,8 +5,6 @@ import (
 	"log"
 	"testing"
 	"time"
-
-	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 func TestAnimationInitialFrameIdx(t *testing.T) {
@@ -14,9 +12,9 @@ func TestAnimationInitialFrameIdx(t *testing.T) {
 		WithSourceRect(0, 0, 10, 10).
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
-		WithFrame(rl.Vector2{X: 0, Y: 0}).
-		WithFrame(rl.Vector2{X: 1, Y: 3}).
-		WithFrame(rl.Vector2{X: 2, Y: 4}).
+		WithFrame(0, 0).
+		WithFrame(1, 3).
+		WithFrame(2, 4).
 		Build()
 
 	actualIdx := anim.GetCurrentFrameIdx()
@@ -33,9 +31,9 @@ func TestAnimationFrameIdxUpdate(t *testing.T) {
 		WithSourceRect(0, 0, 10, 10).
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
-		WithFrame(rl.Vector2{X: 0, Y: 0}).
-		WithFrame(rl.Vector2{X: 1, Y: 3}).
-		WithFrame(rl.Vector2{X: 2, Y: 4}).
+		WithFrame(0, 0).
+		WithFrame(1, 3).
+		WithFrame(2, 4).
 		Build()
 
 	anim.Update(time.Second)
@@ -54,9 +52,9 @@ func TestAnimationFrameIdxLoops(t *testing.T) {
 		WithSourceRect(0, 0, 10, 10).
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
-		WithFrame(rl.Vector2{X: 0, Y: 0}).
-		WithFrame(rl.Vector2{X: 1, Y: 3}).
-		WithFrame(rl.Vector2{X: 2, Y: 4}).
+		WithFrame(0, 0).
+		WithFrame(1, 3).
+		WithFrame(2, 4).
 		Build()
 
 	anim.Update(time.Second)
@@ -77,9 +75,9 @@ func TestAnimationInitialSrcRect(t *testing.T) {
 		WithSourceRect(0, 0, 10, 10).
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
-		WithFrame(rl.Vector2{X: 0, Y: 0}).
-		WithFrame(rl.Vector2{X: 1, Y: 3}).
-		WithFrame(rl.Vector2{X: 2, Y: 4}).
+		WithFrame(0, 0).
+		WithFrame(1, 3).
+		WithFrame(2, 4).
 		Build()
 
 	actualRect := anim.GetCurrentSrcRect()
@@ -96,9 +94,9 @@ func TestAnimationUpdateSrcRect(t *testing.T) {
 		WithSourceRect(0, 0, 10, 10).
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
-		WithFrame(rl.Vector2{X: 0, Y: 0}).
-		WithFrame(rl.Vector2{X: 1, Y: 3}).
-		WithFrame(rl.Vector2{X: 2, Y: 4}).
+		WithFrame(0, 0).
+		WithFrame(1, 3).
+		WithFrame(2, 4).
 		Build()
 
 	anim.Update(time.Second)
@@ -125,9 +123,9 @@ func TestAnimationUpdateSrcRectLoops(t *testing.T) {
 		WithSourceRect(0, 0, 10, 10).
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
-		WithFrame(rl.Vector2{X: 0, Y: 0}).
-		WithFrame(rl.Vector2{X: 1, Y: 3}).
-		WithFrame(rl.Vector2{X: 2, Y: 4}).
+		WithFrame(0, 0).
+		WithFrame(1, 3).
+		WithFrame(2, 4).
 		Build()
 
 	anim.Update(time.Second)

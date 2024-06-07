@@ -28,10 +28,9 @@ func (actor *Actor) Draw() {
 		s.Draw()
 	})
 
-	// for i := range me.Animations {
-	// 	v := me.Animations[i]
-	// 	v.Draw(renderer)
-	// }
+	tools.ForEach(actor.Animations, func(a *Animation) {
+		a.Draw()
+	})
 
 	tools.ForEach(actor.Children, func(child *Actor) {
 		child.Draw()
@@ -215,8 +214,12 @@ func (actor *Actor) HideBorder() {
 	actor.showBorder = false
 }
 
-func (actor *Actor) AddAnimation(sprite *Animation) {
-	actor.Animations = append(actor.Animations, sprite)
+func (actor *Actor) AddAnimation(animation *Animation) {
+	position := actor.windowPosition()
+	animation.DestRect.X += position.X
+	animation.DestRect.Y += position.Y
+
+	actor.Animations = append(actor.Animations, animation)
 }
 
 func (actor *Actor) RemoveAnimation(anim *Animation) {
