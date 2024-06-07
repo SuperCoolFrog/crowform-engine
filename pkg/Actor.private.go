@@ -23,7 +23,7 @@ func (actor *Actor) updateAnimations(deltaTime time.Duration) {
 			return
 		}
 		anim := actor.Animations[i]
-		anim.Update(deltaTime)
+		anim.update(deltaTime)
 	}
 }
 
@@ -80,8 +80,7 @@ func (actor *Actor) getCollisionElement() rl.Rectangle {
 
 	collisionEl := actor.CollisionElement.Value
 
-	// @Todo window position may be needed
-	pos := actor.element
+	pos := actor.GetWindowPosition()
 
 	e := rl.Rectangle{
 		X:      pos.X + collisionEl.X,
@@ -93,13 +92,13 @@ func (actor *Actor) getCollisionElement() rl.Rectangle {
 	return e
 }
 
-func (actor *Actor) getRelativePosition() (position rl.Vector3) {
+func (actor *Actor) GetWindowPosition() (position rl.Vector3) {
 	position.X = actor.position.X
 	position.Y = actor.position.Y
 	position.Z = actor.position.Z
 
 	if actor.parent != nil {
-		parentPos := actor.parent.getRelativePosition()
+		parentPos := actor.parent.GetWindowPosition()
 
 		position.X += parentPos.X
 		position.Y += parentPos.Y
@@ -127,7 +126,7 @@ func (me *Actor) resortChildrenByZ() {
 			}
 
 			nu = tools.InsertSorted(me.Children, child, func(item *Actor) bool {
-				return item.getRelativePosition().Z > child.getRelativePosition().Z
+				return item.GetWindowPosition().Z > child.GetWindowPosition().Z
 			})
 		}
 	}
@@ -137,10 +136,4 @@ func (me *Actor) resortChildrenByZ() {
 	tools.ForEach(nu, func(a *Actor) {
 		me.AddChild(a)
 	})
-}
-
-func (actor *Actor) updateRelativePositions() {
-	// Update Sprites and animations Origin based on getRelativePosition
-	// Add this function to all updates to actor position
-	// Write Tests
 }

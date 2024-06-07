@@ -255,3 +255,173 @@ func TestRemoveSelf(t *testing.T) {
 
 	log.Output(1, "[PASS]: TestRemoveSelf")
 }
+
+func TestWindowPositionForChildActorZero(t *testing.T) {
+	a1 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
+	a2 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
+
+	a1.AddChild(a2)
+
+	if a1.GetWindowPosition().X != 0 {
+		t.Fatalf("Expected parent X to remain 0, actual %f", a1.GetWindowPosition().X)
+	}
+	if a1.GetWindowPosition().Y != 0 {
+		t.Fatalf("Expected parent Y to remain 0, actual %f", a1.GetWindowPosition().Y)
+	}
+	if a2.GetWindowPosition().X != 0 {
+		t.Fatalf("Expected child X to remain 0, actual %f", a2.GetWindowPosition().X)
+	}
+	if a2.GetWindowPosition().Y != 0 {
+		t.Fatalf("Expected child Y to remain 0, actual %f", a2.GetWindowPosition().Y)
+	}
+
+	log.Output(1, "[PASS]: TestWindowPositionForChildActorZero")
+}
+
+func TestWindowPositionForChildActorWhenAdded(t *testing.T) {
+	a1 := pkg.BuildActor().WithPosition(10, 20, 0).Build()
+	a2 := pkg.BuildActor().WithPosition(5, 10, 0).Build()
+
+	a1.AddChild(a2)
+
+	if a1.GetWindowPosition().X != 10 {
+		t.Fatalf("Expected parent X to remain 10, actual %f", a1.GetWindowPosition().X)
+	}
+	if a1.GetWindowPosition().Y != 20 {
+		t.Fatalf("Expected parent Y to remain 20, actual %f", a1.GetWindowPosition().Y)
+	}
+	if a2.GetWindowPosition().X != 15 {
+		t.Fatalf("Expected child X be 15, actual %f", a2.GetWindowPosition().X)
+	}
+	if a2.GetWindowPosition().Y != 30 {
+		t.Fatalf("Expected child Y to be 30, actual %f", a2.GetWindowPosition().Y)
+	}
+
+	log.Output(1, "[PASS]: TestWindowPositionForChildActorWhenAdded")
+}
+
+func TestWindowPositionForChildActorWhenUpdated(t *testing.T) {
+	a1 := pkg.BuildActor().WithPosition(10, 20, 0).Build()
+	a2 := pkg.BuildActor().WithPosition(5, 10, 0).Build()
+
+	a1.AddChild(a2)
+	a1.SetX(15)
+	a1.SetY(25)
+
+	if a1.GetWindowPosition().X != 15 {
+		t.Fatalf("Expected parent X to remain 15, actual %f", a1.GetWindowPosition().X)
+	}
+	if a1.GetWindowPosition().Y != 25 {
+		t.Fatalf("Expected parent Y to remain 20, actual %f", a1.GetWindowPosition().Y)
+	}
+	if a2.GetWindowPosition().X != 20 {
+		t.Fatalf("Expected child X be 20, actual %f", a2.GetWindowPosition().X)
+	}
+	if a2.GetWindowPosition().Y != 35 {
+		t.Fatalf("Expected child Y to be 35, actual %f", a2.GetWindowPosition().Y)
+	}
+
+	log.Output(1, "[PASS]: TestWindowPositionForChildActorWhenUpdated")
+}
+
+// Sprites
+func TestWindowPositionForChildSpriteZero(t *testing.T) {
+	a1 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
+	sprite1 := pkg.BuildSprite().WithDestRect(0, 0, 1, 1).Build()
+
+	a1.AddSprite(sprite1)
+
+	if sprite1.GetWindowDestRect().X != 0 {
+		t.Fatalf("Expected child sprite X to remain 0, actual %f", sprite1.GetWindowDestRect().X)
+	}
+	if sprite1.GetWindowDestRect().Y != 0 {
+		t.Fatalf("Expected child sprite Y to remain 0, actual %f", sprite1.GetWindowDestRect().Y)
+	}
+
+	log.Output(1, "[PASS]: TestWindowPositionForChildSpriteZero")
+}
+
+func TestWindowPositionForChildSpriteWhenAdded(t *testing.T) {
+	a1 := pkg.BuildActor().WithPosition(10, 20, 0).Build()
+	sprite1 := pkg.BuildSprite().WithDestRect(5, 10, 1, 1).Build()
+
+	a1.AddSprite(sprite1)
+
+	if sprite1.GetWindowDestRect().X != 15 {
+		t.Fatalf("Expected child sprite X to be 15, actual %f", sprite1.GetWindowDestRect().X)
+	}
+	if sprite1.GetWindowDestRect().Y != 30 {
+		t.Fatalf("Expected child sprite Y to be 30, actual %f", sprite1.GetWindowDestRect().Y)
+	}
+
+	log.Output(1, "[PASS]: TestWindowPositionForChildSpriteWhenAdded")
+}
+
+func TestWindowPositionForChildSpriteWhenUpdated(t *testing.T) {
+	a1 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
+	sprite1 := pkg.BuildSprite().WithDestRect(5, 10, 1, 1).Build()
+
+	a1.AddSprite(sprite1)
+	a1.SetX(10)
+	a1.SetY(20)
+
+	if sprite1.GetWindowDestRect().X != 15 {
+		t.Fatalf("Expected child sprite X to be 15, actual %f", sprite1.GetWindowDestRect().X)
+	}
+	if sprite1.GetWindowDestRect().Y != 30 {
+		t.Fatalf("Expected child sprite Y to be 30, actual %f", sprite1.GetWindowDestRect().Y)
+	}
+
+	log.Output(1, "[PASS]: TestWindowPositionForChildSpriteWhenUpdated")
+}
+
+// Animation
+func TestWindowPositionForChildAnimationZero(t *testing.T) {
+	a1 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
+	anim1 := pkg.BuildAnimation().WithDestRect(0, 0, 1, 1).Build()
+
+	a1.AddAnimation(anim1)
+
+	if anim1.GetWindowDestRect().X != 0 {
+		t.Fatalf("Expected child animation X to remain 0, actual %f", anim1.GetWindowDestRect().X)
+	}
+	if anim1.GetWindowDestRect().Y != 0 {
+		t.Fatalf("Expected child animation Y to remain 0, actual %f", anim1.GetWindowDestRect().Y)
+	}
+
+	log.Output(1, "[PASS]: TestWindowPositionForChildAnimationZero")
+}
+
+func TestWindowPositionForChildAnimationWhenAdded(t *testing.T) {
+	a1 := pkg.BuildActor().WithPosition(10, 20, 0).Build()
+	anim1 := pkg.BuildAnimation().WithDestRect(5, 10, 1, 1).Build()
+
+	a1.AddAnimation(anim1)
+
+	if anim1.GetWindowDestRect().X != 15 {
+		t.Fatalf("Expected child animation X to be 15, actual %f", anim1.GetWindowDestRect().X)
+	}
+	if anim1.GetWindowDestRect().Y != 30 {
+		t.Fatalf("Expected child animation Y to be 30, actual %f", anim1.GetWindowDestRect().Y)
+	}
+
+	log.Output(1, "[PASS]: TestWindowPositionForChildAnimationWhenAdded")
+}
+
+func TestWindowPositionForChildAnimationWhenUpdated(t *testing.T) {
+	a1 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
+	animation1 := pkg.BuildAnimation().WithDestRect(5, 10, 1, 1).Build()
+
+	a1.AddAnimation(animation1)
+	a1.SetX(10)
+	a1.SetY(20)
+
+	if animation1.GetWindowDestRect().X != 15 {
+		t.Fatalf("Expected child animation X to be 15, actual %f", animation1.GetWindowDestRect().X)
+	}
+	if animation1.GetWindowDestRect().Y != 30 {
+		t.Fatalf("Expected child animation Y to be 30, actual %f", animation1.GetWindowDestRect().Y)
+	}
+
+	log.Output(1, "[PASS]: TestWindowPositionForChildAnimationWhenUpdated")
+}

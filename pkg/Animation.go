@@ -14,6 +14,7 @@ type Animation struct {
 	complete        bool
 	waitTime        time.Duration
 	waitCounter     time.Duration
+	parent          *Actor
 }
 
 func (animation *Animation) Draw() {
@@ -22,17 +23,19 @@ func (animation *Animation) Draw() {
 		animation.loadedTexture = &texture
 	}
 
+	destRect := animation.GetWindowDestRect()
+
 	rl.DrawTexturePro(
 		*animation.loadedTexture,
 		animation.srcRect,
-		animation.DestRect,
+		destRect,
 		animation.Origin,
 		animation.rotation,
 		animation.colorTint,
 	)
 }
 
-func (animation *Animation) Update(deltaTime time.Duration) {
+func (animation *Animation) update(deltaTime time.Duration) {
 	if animation.complete {
 		return
 	}
@@ -91,4 +94,21 @@ func (animation *Animation) GetCurrentFrameIdx() int {
 
 func (animation *Animation) GetCurrentSrcRect() rl.Rectangle {
 	return animation.srcRect
+}
+
+func (animation *Animation) SetParent(parent *Actor) {
+	animation.parent = parent
+}
+
+func (animation *Animation) GetWindowDestRect() rl.Rectangle {
+	if animation.parent == nil {
+		return animation.DestRect
+	}
+
+	parentPos := animation.parent.GetWindowPosition()
+	windowDestRec := animation.DestRect
+	windowDestRec.X += parentPos.X
+	windowDestRec.Y += parentPos.Y
+
+	return windowDestRec
 }

@@ -1,16 +1,18 @@
 package pkg
 
 import (
-	"crowform/internal/cache"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-func (sprite *Sprite) Draw() {
-	if sprite.texture == nil {
-		texture := cache.GetTexture2d(sprite.textureFileName)
-		sprite.texture = &texture
+func (sprite *Sprite) GetWindowDestRect() rl.Rectangle {
+	if sprite.parent == nil {
+		return sprite.DestRect
 	}
 
-	rl.DrawTexturePro(*sprite.texture, sprite.srcRect, sprite.DestRect, sprite.Origin, sprite.rotation, sprite.colorTint)
+	parentPos := sprite.parent.GetWindowPosition()
+	windowDestRec := sprite.DestRect
+	windowDestRec.X += parentPos.X
+	windowDestRec.Y += parentPos.Y
+
+	return windowDestRec
 }

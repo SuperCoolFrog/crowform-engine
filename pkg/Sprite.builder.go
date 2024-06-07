@@ -16,6 +16,7 @@ type SpriteBuilder struct {
 type Sprite struct {
 	SpriteBuilder
 	texture *rl.Texture2D
+	parent  *Actor
 }
 
 func BuildSprite() *SpriteBuilder {

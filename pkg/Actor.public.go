@@ -25,7 +25,7 @@ func (actor *Actor) Draw() {
 	actor.draw()
 
 	tools.ForEach(actor.Sprites, func(s *Sprite) {
-		s.Draw()
+		s.draw()
 	})
 
 	tools.ForEach(actor.Animations, func(a *Animation) {
@@ -87,30 +87,12 @@ func (actor *Actor) GetPosition() rl.Vector3 {
 func (actor *Actor) SetX(x float32) {
 	actor.element.X = x
 	actor.position.X = x
-
-	pos := actor.getRelativePosition()
-
-	tools.ForEach(actor.Sprites, func(s *Sprite) {
-		s.DestRect.X = pos.X
-	})
-	tools.ForEach(actor.Animations, func(s *Animation) {
-		s.DestRect.X = pos.X
-	})
 }
 
 // Updates Element and Position Y
 func (actor *Actor) SetY(y float32) {
 	actor.element.Y = y
 	actor.position.Y = y
-
-	pos := actor.getRelativePosition()
-
-	tools.ForEach(actor.Sprites, func(s *Sprite) {
-		s.DestRect.Y = pos.Y
-	})
-	tools.ForEach(actor.Animations, func(s *Animation) {
-		s.DestRect.Y = pos.Y
-	})
 }
 
 // Updates Position Z
@@ -142,14 +124,14 @@ func (actor *Actor) AddChild(child *Actor) {
 		// Set to max Z
 		max := tools.MaxFloat32Of(
 			tools.MapSlice(actor.Children, func(c *Actor) float32 {
-				return c.getRelativePosition().Z
+				return c.GetWindowPosition().Z
 			})...)
 		child.position.Z = max + 1
 	}
 
 	actor.Children = tools.InsertSorted(actor.Children, child,
 		func(item *Actor) bool {
-			return item.getRelativePosition().Z > child.getRelativePosition().Z
+			return item.GetWindowPosition().Z > child.GetWindowPosition().Z
 		})
 	child.parent = actor
 }
@@ -215,10 +197,7 @@ func (actor *Actor) IsQryType(qryType QueryAttribute) bool {
 }
 
 func (actor *Actor) AddSprite(sprite *Sprite) {
-	position := actor.getRelativePosition()
-	sprite.DestRect.X = position.X
-	sprite.DestRect.Y = position.Y
-
+	sprite.setParent(actor)
 	actor.Sprites = append(actor.Sprites, sprite)
 }
 func (me *Actor) RemoveSprite(spriteToRemove *Sprite) {
@@ -255,10 +234,7 @@ func (actor *Actor) HideBorder() {
 }
 
 func (actor *Actor) AddAnimation(animation *Animation) {
-	position := actor.getRelativePosition()
-	animation.DestRect.X = position.X
-	animation.DestRect.Y = position.Y
-
+	animation.SetParent(actor)
 	actor.Animations = append(actor.Animations, animation)
 }
 

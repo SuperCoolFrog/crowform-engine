@@ -1,14 +1,13 @@
-package tests
+package pkg
 
 import (
-	"crowform/pkg"
 	"log"
 	"testing"
 	"time"
 )
 
 func TestAnimationInitialFrameIdx(t *testing.T) {
-	anim := pkg.BuildAnimation().
+	anim := BuildAnimation().
 		WithSourceRect(0, 0, 10, 10).
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
@@ -27,7 +26,7 @@ func TestAnimationInitialFrameIdx(t *testing.T) {
 }
 
 func TestAnimationFrameIdxUpdate(t *testing.T) {
-	anim := pkg.BuildAnimation().
+	anim := BuildAnimation().
 		WithSourceRect(0, 0, 10, 10).
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
@@ -36,7 +35,7 @@ func TestAnimationFrameIdxUpdate(t *testing.T) {
 		WithFrame(2, 4).
 		Build()
 
-	anim.Update(time.Second)
+	anim.update(time.Second)
 
 	actualIdx := anim.GetCurrentFrameIdx()
 
@@ -48,7 +47,7 @@ func TestAnimationFrameIdxUpdate(t *testing.T) {
 }
 
 func TestAnimationFrameIdxLoops(t *testing.T) {
-	anim := pkg.BuildAnimation().
+	anim := BuildAnimation().
 		WithSourceRect(0, 0, 10, 10).
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
@@ -57,9 +56,9 @@ func TestAnimationFrameIdxLoops(t *testing.T) {
 		WithFrame(2, 4).
 		Build()
 
-	anim.Update(time.Second)
-	anim.Update(time.Second)
-	anim.Update(time.Second)
+	anim.update(time.Second)
+	anim.update(time.Second)
+	anim.update(time.Second)
 
 	actualIdx := anim.GetCurrentFrameIdx()
 
@@ -71,7 +70,7 @@ func TestAnimationFrameIdxLoops(t *testing.T) {
 }
 
 func TestAnimationInitialSrcRect(t *testing.T) {
-	anim := pkg.BuildAnimation().
+	anim := BuildAnimation().
 		WithSourceRect(0, 0, 10, 10).
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
@@ -90,7 +89,7 @@ func TestAnimationInitialSrcRect(t *testing.T) {
 }
 
 func TestAnimationUpdateSrcRect(t *testing.T) {
-	anim := pkg.BuildAnimation().
+	anim := BuildAnimation().
 		WithSourceRect(0, 0, 10, 10).
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
@@ -99,7 +98,7 @@ func TestAnimationUpdateSrcRect(t *testing.T) {
 		WithFrame(2, 4).
 		Build()
 
-	anim.Update(time.Second)
+	anim.update(time.Second)
 
 	actualRect := anim.GetCurrentSrcRect()
 
@@ -107,7 +106,7 @@ func TestAnimationUpdateSrcRect(t *testing.T) {
 		t.Fatalf("Failed Update1 Src Rect Actual {X: %f, Y: %f}, expected {X: 10, Y: 30},", actualRect.X, actualRect.Y)
 	}
 
-	anim.Update(time.Second)
+	anim.update(time.Second)
 
 	actualRect = anim.GetCurrentSrcRect()
 
@@ -119,7 +118,7 @@ func TestAnimationUpdateSrcRect(t *testing.T) {
 }
 
 func TestAnimationUpdateSrcRectLoops(t *testing.T) {
-	anim := pkg.BuildAnimation().
+	anim := BuildAnimation().
 		WithSourceRect(0, 0, 10, 10).
 		WithDestRect(0, 0, 10, 10).
 		WithFramePerSec(1).
@@ -128,9 +127,9 @@ func TestAnimationUpdateSrcRectLoops(t *testing.T) {
 		WithFrame(2, 4).
 		Build()
 
-	anim.Update(time.Second)
-	anim.Update(time.Second)
-	anim.Update(time.Second)
+	anim.update(time.Second)
+	anim.update(time.Second)
+	anim.update(time.Second)
 
 	actualRect := anim.GetCurrentSrcRect()
 
