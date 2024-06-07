@@ -12,7 +12,13 @@ import (
 
 func (actor *Actor) draw() {
 	if actor.showBorder {
-		intRect := actor.element.ToInt32()
+		rect := actor.element
+		pos := actor.GetWindowPosition()
+		rect.X = pos.X
+		rect.Y = pos.Y
+
+		intRect := rect.ToInt32()
+
 		rl.DrawRectangleLines(intRect.X, intRect.Y, intRect.Width, intRect.Height, actor.borderColor)
 	}
 }
