@@ -42,7 +42,6 @@ type Actor struct {
 	QueryAttributes  []QueryAttribute
 	CollisionElement tools.Maybe[rl.Rectangle]
 	Scene            *Scene
-	Color            rl.Color
 
 	parent   *Actor
 	element  rl.Rectangle
@@ -55,6 +54,9 @@ type Actor struct {
 	actions          []ActorAction
 
 	subscribers map[string][]func()
+
+	showBorder  bool
+	borderColor rl.Color
 }
 
 /** Builder Methods **/
@@ -71,10 +73,10 @@ func BuildActor() *ActorBuilder {
 			Children:        make([]*Actor, 0),
 			QueryAttributes: make([]QueryAttribute, 0),
 
-			position: rl.Vector3{},
-			element:  rl.Rectangle{},
-			onUpdate: func(deltaTime time.Duration) {},
-			Color:    rl.Black,
+			position:    rl.Vector3{},
+			element:     rl.Rectangle{},
+			onUpdate:    func(deltaTime time.Duration) {},
+			borderColor: rl.Black,
 			events: ActorEventHandlers{
 				onMouseDown:  func(mousePos rl.Vector2) bool { return true },
 				onMouseUp:    func(mousePos rl.Vector2) bool { return true },
@@ -110,8 +112,8 @@ func (builder *ActorBuilder) WithOnUpdate(onUpdate func(deltaTime time.Duration)
 	builder.actor.onUpdate = onUpdate
 	return builder
 }
-func (builder *ActorBuilder) WithColor(color rl.Color) *ActorBuilder {
-	builder.actor.Color = color
+func (builder *ActorBuilder) WithBorderColor(color rl.Color) *ActorBuilder {
+	builder.actor.borderColor = color
 	return builder
 }
 func (builder *ActorBuilder) WithAllowUpdateDuringPause() *ActorBuilder {

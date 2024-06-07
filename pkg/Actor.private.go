@@ -11,8 +11,10 @@ import (
 /** Actor Methods: Private **/
 
 func (actor *Actor) draw() {
-	intRect := actor.element.ToInt32()
-	rl.DrawRectangle(intRect.X, intRect.Y, intRect.Width, intRect.Height, actor.Color)
+	if actor.showBorder {
+		intRect := actor.element.ToInt32()
+		rl.DrawRectangleLines(intRect.X, intRect.Y, intRect.Width, intRect.Height, actor.borderColor)
+	}
 }
 
 func (actor *Actor) doActions(deltaTime time.Duration, allActions []ActorAction, idx int, onComplete func()) {

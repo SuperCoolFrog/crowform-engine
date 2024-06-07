@@ -205,3 +205,11 @@ func (actor *Actor) RemoveSelf() {
 
 	actor.parent.RemoveChild(actor)
 }
+
+func (actor *Actor) ShowBorder() {
+	actor.showBorder = true
+}
+
+func (actor *Actor) HideBorder() {
+	actor.showBorder = false
+}
