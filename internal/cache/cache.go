@@ -34,6 +34,10 @@ func UnloadTextureCache() {
 	for _, texture := range textures {
 		rl.UnloadTexture(texture)
 	}
+
+	for k := range textures {
+		delete(textures, k)
+	}
 }
 
 /** Fonts **/
@@ -62,5 +66,9 @@ func GetFont(fontName string) rl.Font {
 func UnloadFontsCache() {
 	for _, font := range fonts {
 		rl.UnloadFont(font)
+	}
+
+	for k := range fonts {
+		delete(fonts, k)
 	}
 }

@@ -10,4 +10,10 @@ func RunPreload() {
 	for i := range preloadQueue {
 		preloadQueue[i]()
 	}
+
+	RestPreload()
+}
+
+func RestPreload() {
+	preloadQueue = nil
 }

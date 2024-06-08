@@ -39,6 +39,61 @@ func TestClickEventNoBubble(t *testing.T) {
 	log.Output(1, "[PASS]: TestClickEventNoBubble")
 }
 
+func TestClickCallsHandlerOnceWhileDown(t *testing.T) {
+	expected := 1
+	res := 0
+
+	a2 := BuildActor().WithDimensions(200, 200).WithPosition(0, 0, 2).Build()
+	a2.SetMouseDownHandler(func(mousePos rl.Vector2) bool {
+		res++
+		return false
+	})
+
+	game := BuildGame().Build()
+	scene1 := BuildScene("s1", game).Build()
+
+	scene1.AddChild(a2)
+	game.GoToScene("s1")
+
+	game.handleMouseLeftClick(rl.Vector2{X: 100, Y: 100})
+	game.handleMouseLeftClick(rl.Vector2{X: 100, Y: 100})
+	game.handleMouseLeftClick(rl.Vector2{X: 100, Y: 100})
+	game.handleMouseLeftClick(rl.Vector2{X: 100, Y: 100})
+
+	if res != expected {
+		t.Fatalf("Call once failed actual %d, expected %d", res, expected)
+	}
+
+	log.Output(1, "[PASS]: TestClickCallsHandlerOnceWhileDown")
+}
+
+func TestClickCallsHandlerAfterReleased(t *testing.T) {
+	expected := 2
+	res := 0
+
+	a2 := BuildActor().WithDimensions(200, 200).WithPosition(0, 0, 2).Build()
+	a2.SetMouseDownHandler(func(mousePos rl.Vector2) bool {
+		res++
+		return false
+	})
+
+	game := BuildGame().Build()
+	scene1 := BuildScene("s1", game).Build()
+
+	scene1.AddChild(a2)
+	game.GoToScene("s1")
+
+	game.handleMouseLeftClick(rl.Vector2{X: 100, Y: 100})
+	game.handleMouseLeftRelease(rl.Vector2{X: 100, Y: 100})
+	game.handleMouseLeftClick(rl.Vector2{X: 100, Y: 100})
+
+	if res != expected {
+		t.Fatalf("Call after release failed actual %d, expected %d", res, expected)
+	}
+
+	log.Output(1, "[PASS]: TestClickCallsHandlerAfterReleased")
+}
+
 func TestClickEventBubble(t *testing.T) {
 	expected := "Bottom Clicked"
 	res := ""

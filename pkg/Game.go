@@ -48,7 +48,18 @@ func (builder *GameBuilder) WithAssetDirectory(directoryName string) *GameBuilde
 	return builder
 }
 
+func resetGlobals() {
+	lastMouseDownActor = nil
+	mouseOverTarget = nil
+	cache.ResetSettings()
+	cache.RestPreload()
+	cache.UnloadFontsCache()
+	cache.UnloadTextureCache()
+}
+
 func (builder *GameBuilder) Build() *Game {
+	resetGlobals()
+
 	cache.SetSetting(cache.SettingName_AssetDirectory, builder.assetDirectory)
 
 	return &Game{

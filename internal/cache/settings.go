@@ -28,3 +28,9 @@ func SetSetting[T int | float32 | string](name string, value T) T {
 	settings[name] = value
 	return value
 }
+
+func ResetSettings() {
+	for k := range settings {
+		delete(settings, k)
+	}
+}
