@@ -68,6 +68,7 @@ func (game *Game) Start() {
 	if mogError != nil {
 		panic(mogError)
 	}
+	defer mog.CleanUp()
 
 	rl.InitWindow(game.windowWidth, game.windowHeight, game.windowName)
 

@@ -53,8 +53,29 @@ func (text *Text) SetColor(color rl.Color) {
 func (text *Text) GetPosition() rl.Vector2 {
 	return text.position
 }
-func (text *Text) SetPosition(position rl.Vector2) {
+
+func (text *Text) setPosition(position rl.Vector2) {
 	text.position = position
+}
+func (text *Text) SetPosition(x, y float32) {
+	text.queueForUpdate = append(text.queueForUpdate, func() {
+		position := rl.Vector2{X: x, Y: y}
+		text.setPosition(position)
+	})
+}
+func (text *Text) SetX(x float32) {
+	text.queueForUpdate = append(text.queueForUpdate, func() {
+		nu := text.GetPosition()
+		nu.X = x
+		text.setPosition(nu)
+	})
+}
+func (text *Text) SetY(y float32) {
+	text.queueForUpdate = append(text.queueForUpdate, func() {
+		nu := text.GetPosition()
+		nu.Y = y
+		text.setPosition(nu)
+	})
 }
 
 func (text *Text) SetText(textString string) {
@@ -67,11 +88,11 @@ func (text *Text) GetWindowPos() rl.Vector2 {
 	}
 
 	parentPos := text.parent.GetWindowPosition()
-	windowDestRec := text.position
-	windowDestRec.X += parentPos.X
-	windowDestRec.Y += parentPos.Y
+	winPos := text.position
+	winPos.X += parentPos.X
+	winPos.Y += parentPos.Y
 
-	return windowDestRec
+	return winPos
 }
 
 func (text *Text) vAlignCenter() {
