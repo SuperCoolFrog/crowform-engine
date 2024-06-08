@@ -28,6 +28,10 @@ func (actor *Actor) Draw() {
 		s.draw()
 	})
 
+	tools.ForEach(actor.Texts, func(t *Text) {
+		t.draw()
+	})
+
 	tools.ForEach(actor.Animations, func(a *Animation) {
 		a.Draw()
 	})
