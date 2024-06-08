@@ -12,9 +12,9 @@ import (
 var textures map[string]rl.Texture2D = make(map[string]rl.Texture2D)
 
 func GetTexture2d(filename string) rl.Texture2D {
-	// if texture, ok := textures[filename]; ok {
-	// 	return texture
-	// }
+	if texture, ok := textures[filename]; ok {
+		return texture
+	}
 
 	ex, err := os.Executable()
 	if err != nil {

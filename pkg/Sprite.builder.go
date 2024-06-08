@@ -1,6 +1,8 @@
 package pkg
 
 import (
+	"crowform/internal/cache"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -54,7 +56,13 @@ func (builder *SpriteBuilder) WithColorTint(color rl.Color) *SpriteBuilder {
 }
 
 func (builder *SpriteBuilder) Build() *Sprite {
-	return &Sprite{
+	sprite := &Sprite{
 		SpriteBuilder: *builder,
 	}
+
+	cache.QueueForPreload(func() {
+		sprite.getTexture()
+	})
+
+	return sprite
 }

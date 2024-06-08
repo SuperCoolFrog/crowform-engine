@@ -1,6 +1,8 @@
 package pkg
 
 import (
+	"crowform/internal/cache"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -50,7 +52,13 @@ func (builder *TextBuilder) WithSpacing(spacing float32) *TextBuilder {
 }
 
 func (builder *TextBuilder) Build() *Text {
-	return &Text{
+	t := &Text{
 		TextBuilder: *builder,
 	}
+
+	cache.QueueForPreload(func() {
+		t.GetFont()
+	})
+
+	return t
 }

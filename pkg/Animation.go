@@ -18,21 +18,24 @@ type Animation struct {
 }
 
 func (animation *Animation) Draw() {
-	if animation.loadedTexture == nil {
-		texture := cache.GetTexture2d(animation.textureFileName)
-		animation.loadedTexture = &texture
-	}
-
 	destRect := animation.GetWindowDestRect()
 
 	rl.DrawTexturePro(
-		*animation.loadedTexture,
+		*animation.getTexture(),
 		animation.srcRect,
 		destRect,
 		animation.Origin,
 		animation.rotation,
 		animation.colorTint,
 	)
+}
+func (animation *Animation) getTexture() *rl.Texture2D {
+	if animation.loadedTexture == nil {
+		texture := cache.GetTexture2d(animation.textureFileName)
+		animation.loadedTexture = &texture
+	}
+
+	return animation.loadedTexture
 }
 
 func (animation *Animation) update(deltaTime time.Duration) {
