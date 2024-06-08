@@ -91,6 +91,7 @@ func (game *Game) Start() {
 	}
 
 	cache.UnloadTextureCache()
+	cache.UnloadFontsCache()
 }
 
 func (game *Game) AddScene(scene *Scene) {
