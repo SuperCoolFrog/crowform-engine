@@ -40,6 +40,7 @@ type Actor struct {
 	Children         []*Actor
 	Sprites          []*Sprite
 	Animations       []*Animation
+	Texts            []*Text
 	QueryAttributes  []QueryAttribute
 	CollisionElement tools.Maybe[rl.Rectangle]
 	Scene            *Scene

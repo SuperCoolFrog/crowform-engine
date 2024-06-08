@@ -35,3 +35,33 @@ func UnloadTextureCache() {
 		rl.UnloadTexture(texture)
 	}
 }
+
+/** Fonts **/
+var fonts map[string]rl.Font = make(map[string]rl.Font)
+
+func GetFont(fontName string, fontSize int32) rl.Font {
+	key := fmt.Sprintf("%d::%s", fontSize, fontName)
+
+	if font, ok := fonts[key]; ok {
+		return font
+	}
+
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+	fullPath := fmt.Sprintf("%s%s%s%s%s", exPath, string(os.PathSeparator), GetSetting[string](SettingName_AssetDirectory), string(os.PathSeparator), fontName)
+
+	nuFont := rl.LoadFontEx(fullPath, fontSize, nil, 0)
+
+	fonts[key] = nuFont
+
+	return nuFont
+}
+
+func UnloadFontsCache() {
+	for _, font := range fonts {
+		rl.UnloadFont(font)
+	}
+}

@@ -204,6 +204,14 @@ func (me *Actor) RemoveSprite(spriteToRemove *Sprite) {
 	me.Sprites = tools.RemoveAll(me.Sprites, spriteToRemove)
 }
 
+func (actor *Actor) AddText(text *Text) {
+	text.SetParent(actor)
+	actor.Texts = append(actor.Texts, text)
+}
+func (me *Actor) RemoveText(textToRemove *Text) {
+	me.Texts = tools.RemoveAll(me.Texts, textToRemove)
+}
+
 func (actor *Actor) HasParent() bool {
 	return actor.parent != nil
 }
