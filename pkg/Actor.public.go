@@ -19,6 +19,9 @@ func (actor *Actor) Update(deltaTime time.Duration) {
 	tools.ForEach(actor.Children, func(child *Actor) {
 		child.Update(deltaTime)
 	})
+	tools.ForEach(actor.Texts, func(t *Text) {
+		t.update()
+	})
 }
 
 func (actor *Actor) Draw() {

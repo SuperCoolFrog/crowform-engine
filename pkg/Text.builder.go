@@ -10,6 +10,7 @@ type TextBuilder struct {
 	color        rl.Color
 	text         string
 	fontSize     float32
+	spacing      float32
 }
 
 func BuildText() *TextBuilder {
@@ -19,6 +20,7 @@ func BuildText() *TextBuilder {
 		position:     rl.Vector2{X: 0, Y: 0},
 		color:        rl.White,
 		fontSize:     16,
+		spacing:      1,
 	}
 }
 
@@ -40,6 +42,10 @@ func (builder *TextBuilder) WithColor(color rl.Color) *TextBuilder {
 }
 func (builder *TextBuilder) WithFontSize(fontSize float32) *TextBuilder {
 	builder.fontSize = fontSize
+	return builder
+}
+func (builder *TextBuilder) WithSpacing(spacing float32) *TextBuilder {
+	builder.spacing = spacing
 	return builder
 }
 
