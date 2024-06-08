@@ -35,26 +35,22 @@ func (text *Text) update() {
 
 func (text *Text) draw() {
 	pos := text.GetWindowPos()
-
-	rl.DrawTextEx(text.GetFont(), text.text, pos, text.fontSize, text.spacing, text.color)
+	font := text.GetFont()
+	rl.DrawTextEx(*font, text.text, pos, text.fontSize, text.spacing, text.color)
 }
 
 func (text *Text) GetTextSize() rl.Vector2 {
 	font := text.GetFont()
-	return rl.MeasureTextEx(font, text.text, text.fontSize, text.spacing)
+	return rl.MeasureTextEx(*font, text.text, text.fontSize, text.spacing)
 }
 
-func (text *Text) GetFont() rl.Font {
+func (text *Text) GetFont() *rl.Font {
 	if text.font == nil {
 		font := cache.GetFont(text.fontFileName)
 		text.font = &font
-
-		// > 64 turns blurry but I think this works for most text needed
-		rl.SetTextureFilter(text.font.Texture, rl.FilterBilinear)
-		// rl.SetTextureFilter(text.font.Texture, rl.FilterTrilinear)
 	}
 
-	return *text.font
+	return text.font
 }
 
 func (text *Text) SetParent(parent *Actor) {

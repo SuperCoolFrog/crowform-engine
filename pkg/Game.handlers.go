@@ -28,8 +28,13 @@ func (game *Game) checkInputEvents() {
 	game.handleMouseMove(mousePos)
 }
 
+var lastMouseDownActor *Actor = nil
+
 func (game *Game) handleMouseLeftClick(mousePos rl.Vector2) {
 	if game.currentScene == nil {
+		return
+	}
+	if lastMouseDownActor != nil {
 		return
 	}
 
@@ -50,6 +55,7 @@ func (game *Game) handleMouseLeftClick(mousePos rl.Vector2) {
 	for _, actor := range clickActors {
 		// If click handler returns false then break, otherwise bubble
 		if !actor.events.onMouseDown(mousePos) {
+			lastMouseDownActor = actor
 			break
 		}
 	}
@@ -74,12 +80,24 @@ func (game *Game) handleMouseLeftRelease(mousePos rl.Vector2) {
 		return clickActors[i].GetWindowPosition().Z > clickActors[j].GetWindowPosition().Z
 	})
 
+	if lastMouseDownActor != nil && len(clickActors) > 0 {
+		if lastMouseDownActor == clickActors[0] {
+			lastMouseDownActor.events.onMouseUp(mousePos)
+			lastMouseDownActor = nil
+			return
+		} else {
+			lastMouseDownActor = nil
+		}
+	}
+
 	for _, actor := range clickActors {
 		// If click handler returns false then break, otherwise bubble
 		if !actor.events.onMouseUp(mousePos) {
 			break
 		}
 	}
+
+	lastMouseDownActor = nil
 }
 
 var mouseOverTarget *Actor
