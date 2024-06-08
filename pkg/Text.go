@@ -8,6 +8,16 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+/* Used to get multiple of 8 for font size*/
+func ToClosestFontSize(size float32) (validSize float32) {
+	size64 := float64(size)
+	validSize = float32(math.Round(size64/16) * 16)
+	// validSize = float32(math.Round(size64/8) * 8)
+	// validSize = float32(math.Round(size64/2) * 2)
+
+	return validSize
+}
+
 type Text struct {
 	TextBuilder
 	font           *rl.Font
@@ -26,7 +36,7 @@ func (text *Text) update() {
 func (text *Text) draw() {
 	pos := text.GetWindowPos()
 
-	rl.DrawTextEx(text.GetFont(), text.text, pos, text.fontSize, 0, text.color)
+	rl.DrawTextEx(text.GetFont(), text.text, pos, text.fontSize, text.spacing, text.color)
 }
 
 func (text *Text) GetTextSize() rl.Vector2 {
@@ -36,8 +46,12 @@ func (text *Text) GetTextSize() rl.Vector2 {
 
 func (text *Text) GetFont() rl.Font {
 	if text.font == nil {
-		font := cache.GetFont(text.fontFileName, int32(math.Trunc(float64(text.fontSize))))
+		font := cache.GetFont(text.fontFileName)
 		text.font = &font
+
+		// > 64 turns blurry but I think this works for most text needed
+		rl.SetTextureFilter(text.font.Texture, rl.FilterBilinear)
+		// rl.SetTextureFilter(text.font.Texture, rl.FilterTrilinear)
 	}
 
 	return *text.font

@@ -310,3 +310,7 @@ func MinIntOf(nInts ...int32) int32 {
 
 	return m
 }
+
+func ToEvenFloat32(f32 float32) float32 {
+	return float32(math.RoundToEven(float64(f32)))
+}

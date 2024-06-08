@@ -41,7 +41,7 @@ func (builder *TextBuilder) WithColor(color rl.Color) *TextBuilder {
 	return builder
 }
 func (builder *TextBuilder) WithFontSize(fontSize float32) *TextBuilder {
-	builder.fontSize = fontSize
+	builder.fontSize = ToClosestFontSize(fontSize)
 	return builder
 }
 func (builder *TextBuilder) WithSpacing(spacing float32) *TextBuilder {

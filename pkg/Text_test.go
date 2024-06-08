@@ -1,15 +1,14 @@
-package tests
+package pkg
 
 import (
-	"crowform/pkg"
 	"log"
 	"testing"
 )
 
 // Text
 func TestWindowPositionForChildTextZero(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
-	text := pkg.BuildText().Build()
+	a1 := BuildActor().WithPosition(0, 0, 0).Build()
+	text := BuildText().Build()
 
 	a1.AddText(text)
 
@@ -24,8 +23,8 @@ func TestWindowPositionForChildTextZero(t *testing.T) {
 }
 
 func TestWindowPositionForChildTextWhenAdded(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(10, 20, 0).Build()
-	text := pkg.BuildText().WithPosition(5, 10).Build()
+	a1 := BuildActor().WithPosition(10, 20, 0).Build()
+	text := BuildText().WithPosition(5, 10).Build()
 
 	a1.AddText(text)
 
@@ -40,8 +39,8 @@ func TestWindowPositionForChildTextWhenAdded(t *testing.T) {
 }
 
 func TestWindowPositionForChildTextWhenUpdated(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
-	text := pkg.BuildText().WithPosition(5, 10).Build()
+	a1 := BuildActor().WithPosition(0, 0, 0).Build()
+	text := BuildText().WithPosition(5, 10).Build()
 
 	a1.AddText(text)
 	a1.SetX(10)
@@ -58,11 +57,12 @@ func TestWindowPositionForChildTextWhenUpdated(t *testing.T) {
 }
 
 func TestTextVAlignTop(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(10, 20, 0).Build()
-	text := pkg.BuildText().WithPosition(5, 10).Build()
+	a1 := BuildActor().WithPosition(10, 20, 0).Build()
+	text := BuildText().WithPosition(5, 10).Build()
 
 	a1.AddText(text)
 	text.VAlignTop()
+	text.update()
 
 	if text.GetWindowPos().Y != 20 {
 		t.Fatalf("Expected v align top to have text Y to be 20, actual %f", text.GetWindowPos().Y)
@@ -72,15 +72,44 @@ func TestTextVAlignTop(t *testing.T) {
 }
 
 func TestTextHAlignLeft(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(10, 20, 0).Build()
-	text := pkg.BuildText().WithPosition(5, 10).Build()
+	a1 := BuildActor().WithPosition(10, 20, 0).Build()
+	text := BuildText().WithPosition(5, 10).Build()
 
 	a1.AddText(text)
 	text.HAlignLeft()
+	text.update()
 
 	if text.GetWindowPos().X != 10 {
 		t.Fatalf("Expected v align top to have text X to be 10, actual %f", text.GetWindowPos().X)
 	}
 
 	log.Output(1, "[PASS]: TestTextHAlignLeft")
+}
+
+func TestPixelSizing(t *testing.T) {
+	var expected float32 = 16
+	var actual = ToClosestFontSize(13.23)
+	if expected != actual {
+		t.Fatalf("Expected 13.23 to return 16, actual %f", actual)
+	}
+
+	expected = 16
+	actual = ToClosestFontSize(17.55)
+	if expected != actual {
+		t.Fatalf("Expected 17.55 to return 16, actual %f", actual)
+	}
+
+	expected = 48
+	actual = ToClosestFontSize(45)
+	if expected != actual {
+		t.Fatalf("Expected 45 to return 48, actual %f", actual)
+	}
+
+	expected = 48
+	actual = ToClosestFontSize(44)
+	if expected != actual {
+		t.Fatalf("Expected 44 to return 48, actual %f", actual)
+	}
+
+	log.Output(1, "[PASS]: TestPixelSizing")
 }
