@@ -81,7 +81,7 @@ func (actor *Actor) runActions(deltaTime time.Duration) {
 
 func (actor *Actor) getCollisionElement() rl.Rectangle {
 	if !actor.CollisionElement.HasValue() {
-		return actor.element
+		return actor.GetWindowRec()
 	}
 
 	collisionEl := actor.CollisionElement.Value
@@ -96,6 +96,16 @@ func (actor *Actor) getCollisionElement() rl.Rectangle {
 	}
 
 	return e
+}
+
+func (actor *Actor) GetWindowRec() rl.Rectangle {
+	rect := actor.element
+	winPos := actor.GetWindowPosition()
+
+	rect.X = winPos.X
+	rect.Y = winPos.Y
+
+	return rect
 }
 
 func (actor *Actor) GetWindowPosition() (position rl.Vector3) {
