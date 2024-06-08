@@ -25,6 +25,7 @@ type Game struct {
 	currentScene  *Scene
 	lastFrameTime time.Time
 	paused        bool
+	close         bool
 }
 
 func BuildGame() *GameBuilder {
@@ -56,6 +57,7 @@ func (builder *GameBuilder) Build() *Game {
 		windowHeight: builder.windowHeight,
 		scenes:       make(map[SceneUniqId]*Scene),
 		paused:       false,
+		close:        false,
 	}
 }
 
@@ -76,7 +78,7 @@ func (game *Game) Start() {
 	// rl.SetTargetFPS(120) // causes jaggy animations
 	game.lastFrameTime = time.Now()
 
-	for !rl.WindowShouldClose() {
+	for !(rl.WindowShouldClose() || game.close) {
 		game.checkInputEvents()
 
 		rl.BeginDrawing()
@@ -132,4 +134,8 @@ func (game *Game) endScene() {
 	}
 	game.currentScene.End()
 	game.currentScene = nil
+}
+
+func (game *Game) Shutdown() {
+	game.close = true
 }

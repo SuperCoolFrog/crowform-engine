@@ -241,3 +241,7 @@ func (actor *Actor) AddAnimation(animation *Animation) {
 func (actor *Actor) RemoveAnimation(anim *Animation) {
 	actor.Animations = tools.Remove(actor.Animations, anim)
 }
+
+func (actor *Actor) SetBorderColor(color rl.Color) {
+	actor.borderColor = color
+}
