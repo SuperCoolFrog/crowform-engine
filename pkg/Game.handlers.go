@@ -107,51 +107,43 @@ func (game *Game) handleMouseEnter(mousePos rl.Vector2) {
 		return
 	}
 
-	old := mouseOverTarget
-
-	// Checks if actor was removed
-	if mouseOverTarget != nil && mouseOverTarget.parent == nil {
-		old = nil
-		mouseOverTarget = nil
-	}
-
-	actors := game.currentScene.QueryAny([]QueryAttribute{queryAttribute_RECEIVES_MOUSE_ENTER_EVENT})
-
-	for i := range actors {
-
-		if i >= len(actors) {
-			break
-		}
-
-		actor := actors[i]
-		if rl.CheckCollisionPointRec(mousePos, actor.getCollisionElement()) {
-			if mouseOverTarget == nil {
-				mouseOverTarget = actor
-				break
-			}
-
-			zIndexCurrent := mouseOverTarget.GetWindowPosition().Z
-			zIndex := actor.GetWindowPosition().Z
-
-			if zIndex > zIndexCurrent {
-				if mouseOverTarget.IsQryType(queryAttribute_RECEIVES_MOUSE_EXIT_EVENT) {
-					mouseOverTarget.events.onMouseExit()
-				}
-
-				mouseOverTarget = actor
-
-				break
-			}
-		}
-	}
-
-	if old == mouseOverTarget {
+	if mouseOverTarget != nil {
 		return
 	}
 
-	if mouseOverTarget != nil && mouseOverTarget.events.onMouseEnter != nil {
-		mouseOverTarget.events.onMouseEnter()
+	actors := game.currentScene.QueryAny([]QueryAttribute{queryAttribute_RECEIVES_MOUSE_ENTER_EVENT})
+	mouseActors := make([]*Actor, 0)
+
+	for _, actor := range actors {
+		if rl.CheckCollisionPointRec(mousePos, actor.getCollisionElement()) {
+			mouseActors = append(mouseActors, actor)
+		}
 	}
+
+	if len(mouseActors) == 0 {
+		actors = game.currentScene.QueryAny([]QueryAttribute{queryAttribute_RECEIVES_MOUSE_EXIT_EVENT})
+
+		for _, actor := range actors {
+			if rl.CheckCollisionPointRec(mousePos, actor.getCollisionElement()) {
+				mouseActors = append(mouseActors, actor)
+			}
+		}
+
+		if len(mouseActors) > 0 {
+			mouseOverTarget = mouseActors[0]
+		}
+
+		return
+	}
+
+	sort.Slice(mouseActors, func(i, j int) bool {
+		// Sort descending
+		return mouseActors[i].GetWindowPosition().Z > mouseActors[j].GetWindowPosition().Z
+	})
+
+	mouseOverTarget = mouseActors[0]
+
+	mouseOverTarget.events.onMouseEnter()
 }
 
 func (game *Game) handleMouseExit(mousePos rl.Vector2) {
@@ -159,10 +151,8 @@ func (game *Game) handleMouseExit(mousePos rl.Vector2) {
 		return
 	}
 
-	if rl.CheckCollisionPointRec(mousePos, mouseOverTarget.getCollisionElement()) {
-		if mouseOverTarget.IsQryType(queryAttribute_RECEIVES_MOUSE_EXIT_EVENT) {
-			mouseOverTarget.events.onMouseExit()
-		}
+	if !rl.CheckCollisionPointRec(mousePos, mouseOverTarget.getCollisionElement()) {
+		mouseOverTarget.events.onMouseExit()
 		mouseOverTarget = nil
 	}
 }
