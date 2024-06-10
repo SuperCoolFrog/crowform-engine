@@ -96,6 +96,8 @@ func (sprite *Sprite) getEaseInProgress(timeFraction float64) float64 {
 	return timingQuad(timeFraction)
 }
 
+// https://javascript.info/js-animation
+
 func timingLinear(in float64) float64 {
 	return in
 }
