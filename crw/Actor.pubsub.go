@@ -1,4 +1,4 @@
-package pkg
+package crw
 
 func (actor *Actor) Subscribe(key string, listener func()) {
 	sub, exist := actor.subscribers[key]

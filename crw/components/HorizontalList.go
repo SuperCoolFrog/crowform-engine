@@ -1,7 +1,7 @@
 package components
 
 import (
-	pkg "crowform/pkg"
+	pkg "crowform/crw"
 )
 
 type HorizontalListBuilder struct {

@@ -1,4 +1,4 @@
-package pkg
+package crw
 
 type QueryAttribute string
 

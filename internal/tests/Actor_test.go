@@ -1,19 +1,19 @@
 package tests
 
 import (
-	"crowform/pkg"
+	"crowform/crw"
 	"log"
 	"testing"
 	"time"
 )
 
 func TestActorQueryIncludesSelf(t *testing.T) {
-	a1 := pkg.BuildActor().Build()
-	a2 := pkg.BuildActor().Build()
-	a3 := pkg.BuildActor().Build()
+	a1 := crw.BuildActor().Build()
+	a2 := crw.BuildActor().Build()
+	a3 := crw.BuildActor().Build()
 
-	var Solid pkg.QueryAttribute = "TEST_SOLID"
-	var Attacks pkg.QueryAttribute = "TEST_ATTACKS"
+	var Solid crw.QueryAttribute = "TEST_SOLID"
+	var Attacks crw.QueryAttribute = "TEST_ATTACKS"
 
 	a1.AddQueryAttr(Solid)
 	a2.AddQueryAttr(Solid)
@@ -22,7 +22,7 @@ func TestActorQueryIncludesSelf(t *testing.T) {
 	a1.AddChild(a2)
 	a1.AddChild(a3)
 
-	q := []pkg.QueryAttribute{Solid}
+	q := []crw.QueryAttribute{Solid}
 	res := a1.QueryAny(q)
 
 	if len(res) != 2 {
@@ -33,12 +33,12 @@ func TestActorQueryIncludesSelf(t *testing.T) {
 }
 
 func TestActorQueryChildrenWithoutSelf(t *testing.T) {
-	a1 := pkg.BuildActor().Build()
-	a2 := pkg.BuildActor().Build()
-	a3 := pkg.BuildActor().Build()
+	a1 := crw.BuildActor().Build()
+	a2 := crw.BuildActor().Build()
+	a3 := crw.BuildActor().Build()
 
-	var Solid pkg.QueryAttribute = "TEST_SOLID"
-	var Attacks pkg.QueryAttribute = "TEST_ATTACKS"
+	var Solid crw.QueryAttribute = "TEST_SOLID"
+	var Attacks crw.QueryAttribute = "TEST_ATTACKS"
 
 	a2.AddQueryAttr(Solid)
 	a3.AddQueryAttr(Attacks)
@@ -46,7 +46,7 @@ func TestActorQueryChildrenWithoutSelf(t *testing.T) {
 	a1.AddChild(a2)
 	a1.AddChild(a3)
 
-	q := []pkg.QueryAttribute{Solid}
+	q := []crw.QueryAttribute{Solid}
 	res := a1.QueryAny(q)
 
 	if len(res) != 1 {
@@ -57,9 +57,9 @@ func TestActorQueryChildrenWithoutSelf(t *testing.T) {
 }
 
 func TestActorAddChildZOrderAsc(t *testing.T) {
-	a1 := pkg.BuildActor().Build()
-	a2 := pkg.BuildActor().WithPosition(0, 0, 1).Build()
-	a3 := pkg.BuildActor().WithPosition(0, 0, 2).Build()
+	a1 := crw.BuildActor().Build()
+	a2 := crw.BuildActor().WithPosition(0, 0, 1).Build()
+	a3 := crw.BuildActor().WithPosition(0, 0, 2).Build()
 
 	a1.AddChild(a2)
 	a1.AddChild(a3)
@@ -75,9 +75,9 @@ func TestActorAddChildZOrderAsc(t *testing.T) {
 }
 
 func TestActorAddChildZOrderDesc(t *testing.T) {
-	a1 := pkg.BuildActor().Build()
-	a2 := pkg.BuildActor().WithPosition(0, 0, 2).Build()
-	a3 := pkg.BuildActor().WithPosition(0, 0, 1).Build()
+	a1 := crw.BuildActor().Build()
+	a2 := crw.BuildActor().WithPosition(0, 0, 2).Build()
+	a3 := crw.BuildActor().WithPosition(0, 0, 1).Build()
 
 	a1.AddChild(a2)
 	a1.AddChild(a3)
@@ -94,9 +94,9 @@ func TestActorAddChildZOrderDesc(t *testing.T) {
 }
 
 func TestActorAddChildZDefault(t *testing.T) {
-	a1 := pkg.BuildActor().Build()
-	a2 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
-	a3 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
+	a1 := crw.BuildActor().Build()
+	a2 := crw.BuildActor().WithPosition(0, 0, 0).Build()
+	a3 := crw.BuildActor().WithPosition(0, 0, 0).Build()
 
 	a1.AddChild(a2)
 	a1.AddChild(a3)
@@ -116,12 +116,12 @@ func TestActorActionsRun(t *testing.T) {
 	expected := "ACTION RAN"
 	actual := "ACTION DID NOT RUN"
 
-	a1 := pkg.BuildActor().
+	a1 := crw.BuildActor().
 		WithAction(
-			func(actor *pkg.Actor) bool {
+			func(actor *crw.Actor) bool {
 				return true
 			},
-			func(deltaTime time.Duration, actor *pkg.Actor, done pkg.ActorActionDone) {
+			func(deltaTime time.Duration, actor *crw.Actor, done crw.ActorActionDone) {
 				actual = expected
 				done()
 			}).
@@ -141,28 +141,28 @@ func TestActorActionsRunInSequence(t *testing.T) {
 	expected := []int{1, 2, 3}
 	actual := make([]int, 0)
 
-	a1 := pkg.BuildActor().
+	a1 := crw.BuildActor().
 		WithAction(
-			func(actor *pkg.Actor) bool {
+			func(actor *crw.Actor) bool {
 				return true
 			},
-			func(deltaTime time.Duration, actor *pkg.Actor, done pkg.ActorActionDone) {
+			func(deltaTime time.Duration, actor *crw.Actor, done crw.ActorActionDone) {
 				actual = append(actual, 1)
 				done()
 			}).
 		WithAction(
-			func(actor *pkg.Actor) bool {
+			func(actor *crw.Actor) bool {
 				return true
 			},
-			func(deltaTime time.Duration, actor *pkg.Actor, done pkg.ActorActionDone) {
+			func(deltaTime time.Duration, actor *crw.Actor, done crw.ActorActionDone) {
 				actual = append(actual, 2)
 				done()
 			}).
 		WithAction(
-			func(actor *pkg.Actor) bool {
+			func(actor *crw.Actor) bool {
 				return true
 			},
-			func(deltaTime time.Duration, actor *pkg.Actor, done pkg.ActorActionDone) {
+			func(deltaTime time.Duration, actor *crw.Actor, done crw.ActorActionDone) {
 				actual = append(actual, 3)
 				done()
 			}).
@@ -182,7 +182,7 @@ func TestPubSub(t *testing.T) {
 	expected := "SUB CALLED"
 	actual := "SUB NOT CALLED"
 
-	a1 := pkg.BuildActor().Build()
+	a1 := crw.BuildActor().Build()
 	a1.Subscribe("1", func() {
 		actual = expected
 	})
@@ -200,7 +200,7 @@ func TestPubAllSubs(t *testing.T) {
 	expected := 3
 	actual := 0
 
-	a1 := pkg.BuildActor().Build()
+	a1 := crw.BuildActor().Build()
 	a1.Subscribe("1", func() {
 		actual++
 	})
@@ -223,8 +223,8 @@ func TestPubAllSubs(t *testing.T) {
 func TestRemoveChild(t *testing.T) {
 	expected := 0
 
-	a1 := pkg.BuildActor().Build()
-	c1 := pkg.BuildActor().Build()
+	a1 := crw.BuildActor().Build()
+	c1 := crw.BuildActor().Build()
 
 	a1.AddChild(c1)
 	a1.RemoveChild(c1)
@@ -241,8 +241,8 @@ func TestRemoveChild(t *testing.T) {
 func TestRemoveSelf(t *testing.T) {
 	expected := 0
 
-	a1 := pkg.BuildActor().Build()
-	c1 := pkg.BuildActor().Build()
+	a1 := crw.BuildActor().Build()
+	c1 := crw.BuildActor().Build()
 
 	a1.AddChild(c1)
 	c1.RemoveSelf()
@@ -257,8 +257,8 @@ func TestRemoveSelf(t *testing.T) {
 }
 
 func TestWindowPositionForChildActorZero(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
-	a2 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
+	a1 := crw.BuildActor().WithPosition(0, 0, 0).Build()
+	a2 := crw.BuildActor().WithPosition(0, 0, 0).Build()
 
 	a1.AddChild(a2)
 
@@ -279,8 +279,8 @@ func TestWindowPositionForChildActorZero(t *testing.T) {
 }
 
 func TestWindowPositionForChildActorWhenAdded(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(10, 20, 0).Build()
-	a2 := pkg.BuildActor().WithPosition(5, 10, 0).Build()
+	a1 := crw.BuildActor().WithPosition(10, 20, 0).Build()
+	a2 := crw.BuildActor().WithPosition(5, 10, 0).Build()
 
 	a1.AddChild(a2)
 
@@ -301,8 +301,8 @@ func TestWindowPositionForChildActorWhenAdded(t *testing.T) {
 }
 
 func TestWindowPositionForChildActorWhenUpdated(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(10, 20, 0).Build()
-	a2 := pkg.BuildActor().WithPosition(5, 10, 0).Build()
+	a1 := crw.BuildActor().WithPosition(10, 20, 0).Build()
+	a2 := crw.BuildActor().WithPosition(5, 10, 0).Build()
 
 	a1.AddChild(a2)
 	a1.SetX(15)
@@ -326,8 +326,8 @@ func TestWindowPositionForChildActorWhenUpdated(t *testing.T) {
 
 // Sprites
 func TestWindowPositionForChildSpriteZero(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
-	sprite1 := pkg.BuildSprite().WithDestRect(0, 0, 1, 1).Build()
+	a1 := crw.BuildActor().WithPosition(0, 0, 0).Build()
+	sprite1 := crw.BuildSprite().WithDestRect(0, 0, 1, 1).Build()
 
 	a1.AddSprite(sprite1)
 
@@ -342,8 +342,8 @@ func TestWindowPositionForChildSpriteZero(t *testing.T) {
 }
 
 func TestWindowPositionForChildSpriteWhenAdded(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(10, 20, 0).Build()
-	sprite1 := pkg.BuildSprite().WithDestRect(5, 10, 1, 1).Build()
+	a1 := crw.BuildActor().WithPosition(10, 20, 0).Build()
+	sprite1 := crw.BuildSprite().WithDestRect(5, 10, 1, 1).Build()
 
 	a1.AddSprite(sprite1)
 
@@ -358,8 +358,8 @@ func TestWindowPositionForChildSpriteWhenAdded(t *testing.T) {
 }
 
 func TestWindowPositionForChildSpriteWhenUpdated(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
-	sprite1 := pkg.BuildSprite().WithDestRect(5, 10, 1, 1).Build()
+	a1 := crw.BuildActor().WithPosition(0, 0, 0).Build()
+	sprite1 := crw.BuildSprite().WithDestRect(5, 10, 1, 1).Build()
 
 	a1.AddSprite(sprite1)
 	a1.SetX(10)
@@ -377,8 +377,8 @@ func TestWindowPositionForChildSpriteWhenUpdated(t *testing.T) {
 
 // Animation
 func TestWindowPositionForChildAnimationZero(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
-	anim1 := pkg.BuildAnimation().WithDestRect(0, 0, 1, 1).Build()
+	a1 := crw.BuildActor().WithPosition(0, 0, 0).Build()
+	anim1 := crw.BuildAnimation().WithDestRect(0, 0, 1, 1).Build()
 
 	a1.AddAnimation(anim1)
 
@@ -393,8 +393,8 @@ func TestWindowPositionForChildAnimationZero(t *testing.T) {
 }
 
 func TestWindowPositionForChildAnimationWhenAdded(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(10, 20, 0).Build()
-	anim1 := pkg.BuildAnimation().WithDestRect(5, 10, 1, 1).Build()
+	a1 := crw.BuildActor().WithPosition(10, 20, 0).Build()
+	anim1 := crw.BuildAnimation().WithDestRect(5, 10, 1, 1).Build()
 
 	a1.AddAnimation(anim1)
 
@@ -409,8 +409,8 @@ func TestWindowPositionForChildAnimationWhenAdded(t *testing.T) {
 }
 
 func TestWindowPositionForChildAnimationWhenUpdated(t *testing.T) {
-	a1 := pkg.BuildActor().WithPosition(0, 0, 0).Build()
-	animation1 := pkg.BuildAnimation().WithDestRect(5, 10, 1, 1).Build()
+	a1 := crw.BuildActor().WithPosition(0, 0, 0).Build()
+	animation1 := crw.BuildAnimation().WithDestRect(5, 10, 1, 1).Build()
 
 	a1.AddAnimation(animation1)
 	a1.SetX(10)
