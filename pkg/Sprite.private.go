@@ -2,12 +2,18 @@ package pkg
 
 import (
 	"crowform/internal/cache"
+	"crowform/internal/tools"
 	"time"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 func (sprite *Sprite) update(deltaTime time.Duration) {
+	tools.ForEach(sprite.queueForUpdate, func(f func()) {
+		f()
+	})
+	sprite.queueForUpdate = nil
+
 	sprite.updateAnimations(deltaTime)
 }
 
@@ -34,4 +40,8 @@ func (sprite *Sprite) getTexture() *rl.Texture2D {
 
 func (sprite *Sprite) getDrawDestRect() rl.Rectangle {
 	return sprite.getAnimationDestRect()
+}
+
+func (sprite *Sprite) addToUpdateQueue(item func()) {
+	sprite.queueForUpdate = append(sprite.queueForUpdate, item)
 }

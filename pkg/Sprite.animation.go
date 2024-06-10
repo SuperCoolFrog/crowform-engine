@@ -38,14 +38,20 @@ func (sprite *Sprite) setupAnimation(sAnimType spriteAnimType, totalTime time.Du
 }
 
 func (sprite *Sprite) SetLinear(totalTime time.Duration, startDelta rl.Vector2) {
-	sprite.setupAnimation(spriteAnimType_LINEAR, totalTime, startDelta)
+	sprite.addToUpdateQueue(func() {
+		sprite.setupAnimation(spriteAnimType_LINEAR, totalTime, startDelta)
+	})
 }
 
 func (sprite *Sprite) SetEaseIn(totalTime time.Duration, startDelta rl.Vector2) {
-	sprite.setupAnimation(spriteAnimType_EASE_IN, totalTime, startDelta)
+	sprite.addToUpdateQueue(func() {
+		sprite.setupAnimation(spriteAnimType_EASE_IN, totalTime, startDelta)
+	})
 }
 func (sprite *Sprite) SetEaseOut(totalTime time.Duration, startDelta rl.Vector2) {
-	sprite.setupAnimation(spriteAnimType_EASE_OUT, totalTime, startDelta)
+	sprite.addToUpdateQueue(func() {
+		sprite.setupAnimation(spriteAnimType_EASE_OUT, totalTime, startDelta)
+	})
 }
 
 func (sprite *Sprite) getAnimationDestRect() rl.Rectangle {

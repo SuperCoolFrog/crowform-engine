@@ -28,8 +28,9 @@ type spriteAnimation struct {
 type Sprite struct {
 	SpriteBuilder
 	spriteAnimation
-	texture *rl.Texture2D
-	parent  *Actor
+	texture        *rl.Texture2D
+	parent         *Actor
+	queueForUpdate []func()
 }
 
 func BuildSprite() *SpriteBuilder {

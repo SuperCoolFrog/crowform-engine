@@ -13,6 +13,8 @@ func TestLinearAnimation(t *testing.T) {
 	s := BuildSprite().WithDestRect(99, 60, 10, 20).Build()
 	s.SetLinear(time.Second*3, rl.Vector2{X: -99, Y: -60})
 
+	s.update(0)
+
 	if s.animationProgressRect.X != 0 {
 		t.Fatalf("AnimationProgressRect should init at x = 0, actual x = %f", s.animationProgressRect.X)
 	}
@@ -67,6 +69,8 @@ func TestLinearAnimation(t *testing.T) {
 func TestEaseInAnimation(t *testing.T) {
 	s := BuildSprite().WithDestRect(99, 60, 10, 20).Build()
 	s.SetEaseIn(time.Second*3, rl.Vector2{X: -99, Y: -60})
+
+	s.update(0)
 
 	if s.animationProgressRect.X != 0 {
 		t.Fatalf("AnimationProgressRect should init at x = 0, actual x = %f", s.animationProgressRect.X)
