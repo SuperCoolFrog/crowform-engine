@@ -15,6 +15,7 @@ func (actor *Actor) Update(deltaTime time.Duration) {
 	actor.onUpdate(deltaTime)
 	actor.runActions(deltaTime)
 	actor.updateAnimations(deltaTime)
+	actor.updateSprites(deltaTime)
 
 	tools.ForEach(actor.Children, func(child *Actor) {
 		child.Update(deltaTime)

@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"crowform/internal/cache"
+	"time"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -15,8 +16,18 @@ type SpriteBuilder struct {
 	colorTint       rl.Color
 }
 
+type spriteAnimation struct {
+	animationType         spriteAnimType
+	animationTime         time.Duration
+	animationDuration     time.Duration
+	animationState        spriteAnimState
+	animationStartRect    rl.Rectangle
+	animationProgressRect rl.Rectangle
+}
+
 type Sprite struct {
 	SpriteBuilder
+	spriteAnimation
 	texture *rl.Texture2D
 	parent  *Actor
 }
@@ -59,6 +70,12 @@ func (builder *SpriteBuilder) Build() *Sprite {
 	sprite := &Sprite{
 		SpriteBuilder: *builder,
 	}
+	sprite.animationType = spriteAnimType_NONE
+	sprite.animationTime = time.Duration(0)
+	sprite.animationDuration = time.Duration(0)
+	sprite.animationState = spriteAnimState_NONE
+	sprite.animationStartRect = sprite.DestRect
+	sprite.animationProgressRect = sprite.DestRect
 
 	cache.QueueForPreload(func() {
 		sprite.getTexture()

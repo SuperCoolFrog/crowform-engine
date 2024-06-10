@@ -16,3 +16,12 @@ func (sprite *Sprite) GetWindowDestRect() rl.Rectangle {
 
 	return windowDestRec
 }
+
+func (sprite *Sprite) GetWindowPosition() rl.Vector2 {
+	destRect := sprite.GetWindowDestRect()
+
+	return rl.Vector2{
+		X: destRect.X,
+		Y: destRect.Y,
+	}
+}

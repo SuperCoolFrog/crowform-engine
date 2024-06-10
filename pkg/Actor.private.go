@@ -32,6 +32,15 @@ func (actor *Actor) updateAnimations(deltaTime time.Duration) {
 		anim.update(deltaTime)
 	}
 }
+func (actor *Actor) updateSprites(deltaTime time.Duration) {
+	for i := range actor.Sprites {
+		if i >= len(actor.Sprites) {
+			return
+		}
+		sprite := actor.Sprites[i]
+		sprite.update(deltaTime)
+	}
+}
 
 func (actor *Actor) doActions(deltaTime time.Duration, allActions []ActorAction, idx int, onComplete func()) {
 	if idx > len(allActions)-1 {
