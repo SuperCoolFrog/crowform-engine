@@ -13,18 +13,34 @@ type Scene struct {
 	SceneId    SceneUniqId
 	parentGame *Game
 	paused     bool
+	onStart    func(scene *Scene)
+	onEnd      func(scene *Scene)
 }
 
 type SceneBuilder struct {
 	parentGame *Game
 	sceneId    SceneUniqId
+	onStart    func(scene *Scene)
+	onEnd      func(scene *Scene)
 }
 
 func BuildScene(sceneId SceneUniqId, game *Game) *SceneBuilder {
 	return &SceneBuilder{
 		sceneId:    sceneId,
 		parentGame: game,
+		onStart:    func(scene *Scene) {},
+		onEnd:      func(scene *Scene) {},
 	}
+}
+
+func (builder *SceneBuilder) WithOnStart(onStart func(scene *Scene)) *SceneBuilder {
+	builder.onStart = onStart
+	return builder
+}
+
+func (builder *SceneBuilder) WithOnEnd(onEnd func(scene *Scene)) *SceneBuilder {
+	builder.onEnd = onEnd
+	return builder
 }
 
 func (builder *SceneBuilder) Build() *Scene {
@@ -38,6 +54,8 @@ func (builder *SceneBuilder) Build() *Scene {
 		SceneId:    builder.sceneId,
 		parentGame: builder.parentGame,
 		paused:     false,
+		onStart:    builder.onStart,
+		onEnd:      builder.onEnd,
 	}
 
 	builder.parentGame.AddScene(nuScene)
@@ -68,5 +86,9 @@ func (scene *Scene) Update(deltaTime time.Duration) {
 	})
 }
 
-func (scene *Scene) Start() {}
-func (scene *Scene) End()   {}
+func (scene *Scene) Start() {
+	scene.onStart(scene)
+}
+func (scene *Scene) End() {
+	scene.onEnd(scene)
+}
