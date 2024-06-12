@@ -59,6 +59,7 @@ type Actor struct {
 
 	showBorder  bool
 	borderColor rl.Color
+	strictZ     bool
 }
 
 /** Builder Methods **/
@@ -130,6 +131,11 @@ func (builder *ActorBuilder) WithAction(when ActorWhenCondition, do ActorDoActio
 	}
 
 	builder.actor.actions = append(builder.actor.actions, ActorAction{len(builder.actor.actions), when, do})
+	return builder
+}
+
+func (builder *ActorBuilder) WithStrictZ() *ActorBuilder {
+	builder.actor.strictZ = true
 	return builder
 }
 

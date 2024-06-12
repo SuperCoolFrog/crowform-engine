@@ -112,6 +112,31 @@ func TestActorAddChildZDefault(t *testing.T) {
 	log.Output(1, "[PASS]: TestActorAddChildZDefault")
 }
 
+func TestActorAddChildZDefaultWithMouseZ(t *testing.T) {
+	a1 := crw.BuildActor().Build()
+	a2 := crw.BuildActor().WithPosition(0, 0, 0).Build()
+	a3 := crw.BuildActor().WithPosition(0, 0, 0).Build()
+	mouse := crw.BuildActor().WithPosition(0, 0, crw.SCENE_MOUSE_ZINDEX).Build()
+
+	a1.AddChild(mouse)
+	a1.AddChild(a2)
+	a1.AddChild(a3)
+
+	if a1.Children[0] != a2 {
+		t.Fatalf("Test ChildZ returns incorrect results: expected [a2] at index [0]")
+	}
+
+	if a1.Children[1] != a3 {
+		t.Fatalf("Test ChildZ returns incorrect results: expected [a3] at index [1]")
+	}
+
+	if a1.Children[2] != mouse {
+		t.Fatalf("Test ChildZ with mouse returns incorrect results: expected [mouse] at index [2]")
+	}
+
+	log.Output(1, "[PASS]: TestActorAddChildZDefaultWithMouseZ")
+}
+
 func TestActorActionsRun(t *testing.T) {
 	expected := "ACTION RAN"
 	actual := "ACTION DID NOT RUN"

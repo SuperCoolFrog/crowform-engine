@@ -129,12 +129,20 @@ func (actor *Actor) SetXYZ(x float32, y float32, z float32) {
 
 func (actor *Actor) AddChild(child *Actor) {
 	if child.position.Z == 0 {
-		// Set to max Z
-		max := tools.MaxFloat32Of(
-			tools.MapSlice(actor.Children, func(c *Actor) float32 {
-				return c.GetWindowPosition().Z
-			})...)
-		child.position.Z = max + 1
+		var minNext float32 = 1
+
+		tools.ForEach(actor.Children, func(a *Actor) {
+			next := a.GetWindowPosition().Z
+			if minNext < next {
+				if next >= SCENE_MOUSE_ZINDEX {
+					return
+				} else {
+					minNext = next
+				}
+			}
+		})
+
+		child.position.Z = minNext + 1
 	}
 
 	actor.Children = tools.InsertSorted(actor.Children, child,
