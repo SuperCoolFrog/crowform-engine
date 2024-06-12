@@ -191,6 +191,10 @@ func Trunc(n float64, prec float64) float64 {
 	return float64(int(n*p)) / p
 }
 
+func TruncFloat32(n float32) float64 {
+	return math.Trunc(float64(n))
+}
+
 // a + ((b - a) * t)
 func Lerp(v1 vector.Vector, v2 vector.Vector, t float64) vector.Vector {
 	// return v1.Add(v2.Subtract(v1).MultiplyScalar(t))
