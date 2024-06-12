@@ -11,9 +11,7 @@ import (
 /* Used to get multiple of 8 for font size*/
 func ToClosestFontSize(size float32) (validSize float32) {
 	size64 := float64(size)
-	validSize = float32(math.Round(size64/16) * 16)
-	// validSize = float32(math.Round(size64/8) * 8)
-	// validSize = float32(math.Round(size64/2) * 2)
+	validSize = float32(math.Round(size64/8) * 8)
 
 	return validSize
 }
