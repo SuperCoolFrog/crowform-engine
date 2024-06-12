@@ -25,3 +25,18 @@ func (sprite *Sprite) GetWindowPosition() rl.Vector2 {
 		Y: destRect.Y,
 	}
 }
+
+func (sprite *Sprite) GetY() float32 {
+	return sprite.DestRect.Y
+}
+func (sprite *Sprite) GetX() float32 {
+	return sprite.DestRect.X
+}
+
+func (sprite *Sprite) SetY(y float32) {
+	sprite.DestRect.Y = y
+}
+
+func (sprite *Sprite) SetX(x float32) {
+	sprite.DestRect.X = x
+}
