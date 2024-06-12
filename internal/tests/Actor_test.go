@@ -133,6 +133,9 @@ func TestActorAddChildZDefaultWithMouseZ(t *testing.T) {
 	if a1.Children[2] != mouse {
 		t.Fatalf("Test ChildZ with mouse returns incorrect results: expected [mouse] at index [2]")
 	}
+	if a1.Children[2].GetPosition().Z != mouse.GetPosition().Z {
+		t.Fatalf("Test ChildZ with mouse expected Z %f, actual Z %f", mouse.GetPosition().Z, a1.Children[2].GetPosition().Z)
+	}
 
 	log.Output(1, "[PASS]: TestActorAddChildZDefaultWithMouseZ")
 }

@@ -121,7 +121,6 @@ func (scene *Scene) ChangeMouseTexture(sprite *Sprite) {
 			scene.mousePointer.SetX(pos.X)
 			scene.mousePointer.SetY(pos.Y)
 		}).
-		WithStrictZ().
 		WithAllowUpdateDuringPause().
 		Build()
 	mouse.AddSprite(sprite)
