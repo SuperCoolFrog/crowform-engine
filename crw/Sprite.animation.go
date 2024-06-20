@@ -37,21 +37,28 @@ func (sprite *Sprite) setupAnimation(sAnimType spriteAnimType, totalTime time.Du
 	sprite.animationProgressRect = sprite.animationStartRect
 }
 
-func (sprite *Sprite) SetLinear(totalTime time.Duration, startDelta rl.Vector2) {
+func (sprite *Sprite) SetLinear(totalTime time.Duration, startDelta rl.Vector2) *spriteAnimation {
 	sprite.addToUpdateQueue(func() {
 		sprite.setupAnimation(spriteAnimType_LINEAR, totalTime, startDelta)
 	})
+	return &sprite.spriteAnimation
 }
 
-func (sprite *Sprite) SetEaseIn(totalTime time.Duration, startDelta rl.Vector2) {
+func (sprite *Sprite) SetEaseIn(totalTime time.Duration, startDelta rl.Vector2) *spriteAnimation {
 	sprite.addToUpdateQueue(func() {
 		sprite.setupAnimation(spriteAnimType_EASE_IN, totalTime, startDelta)
 	})
+	return &sprite.spriteAnimation
 }
-func (sprite *Sprite) SetEaseOut(totalTime time.Duration, startDelta rl.Vector2) {
+func (sprite *Sprite) SetEaseOut(totalTime time.Duration, startDelta rl.Vector2) *spriteAnimation {
 	sprite.addToUpdateQueue(func() {
 		sprite.setupAnimation(spriteAnimType_EASE_OUT, totalTime, startDelta)
 	})
+	return &sprite.spriteAnimation
+}
+
+func (spriteAnim *spriteAnimation) WithOnAnimationComplete(onComplete func()) {
+	spriteAnim.onAnimationComplete = onComplete
 }
 
 func (sprite *Sprite) getAnimationDestRect() rl.Rectangle {
@@ -91,6 +98,7 @@ func (sprite *Sprite) updateAnimations(deltaTime time.Duration) {
 
 	if timeFraction == 1 {
 		sprite.animationState = spriteAnimState_COMPLETE
+		sprite.spriteAnimation.onAnimationComplete()
 	}
 }
 

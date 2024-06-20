@@ -23,6 +23,7 @@ type spriteAnimation struct {
 	animationState        spriteAnimState
 	animationStartRect    rl.Rectangle
 	animationProgressRect rl.Rectangle
+	onAnimationComplete   func()
 }
 
 type Sprite struct {
@@ -77,6 +78,7 @@ func (builder *SpriteBuilder) Build() *Sprite {
 	sprite.animationState = spriteAnimState_NONE
 	sprite.animationStartRect = sprite.DestRect
 	sprite.animationProgressRect = sprite.DestRect
+	sprite.onAnimationComplete = func() {}
 
 	cache.QueueForPreload(func() {
 		sprite.getTexture()

@@ -130,3 +130,22 @@ func TestEaseInAnimation(t *testing.T) {
 
 	log.Output(1, "[PASS]: TestEaseInAnimation")
 }
+
+func TestOnAnimationCompleteCalled(t *testing.T) {
+	expected := "OnAnimationComplete Called"
+	actual := "OnAnimationComplete Not Called"
+
+	s := BuildSprite().WithDestRect(99, 60, 10, 20).Build()
+	s.SetLinear(time.Second, rl.Vector2{X: -99, Y: -60}).
+		WithOnAnimationComplete(func() {
+			actual = expected
+		})
+
+	s.update(time.Second * 2)
+
+	if actual != expected {
+		t.Fatalf("Expected %s, Actual %s", expected, actual)
+	}
+
+	log.Output(1, "[PASS]: TestOnAnimationCompleteCalled")
+}
