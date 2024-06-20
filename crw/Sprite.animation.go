@@ -131,7 +131,7 @@ func (sprite *Sprite) updateAnimations(deltaTime time.Duration) {
 		progress = timingLinear(timeFraction)
 		sprite.setTextureOpacity(progress)
 	case spriteAnimType_FADE_OUT:
-		progress = asOutFunction(timingLinear)(timeFraction)
+		progress = 1 - timingLinear(timeFraction)
 		sprite.setTextureOpacity(progress)
 	}
 
