@@ -16,16 +16,6 @@ type SpriteBuilder struct {
 	colorTint       rl.Color
 }
 
-type spriteAnimation struct {
-	animationType         spriteAnimType
-	animationTime         time.Duration
-	animationDuration     time.Duration
-	animationState        spriteAnimState
-	animationStartRect    rl.Rectangle
-	animationProgressRect rl.Rectangle
-	onAnimationComplete   func()
-}
-
 type Sprite struct {
 	SpriteBuilder
 	spriteAnimation
@@ -81,7 +71,7 @@ func (builder *SpriteBuilder) Build() *Sprite {
 	sprite.onAnimationComplete = func() {}
 
 	cache.QueueForPreload(func() {
-		sprite.getTexture()
+		sprite.getCachedTexture()
 	})
 
 	return sprite

@@ -31,6 +31,36 @@ func GetTexture2d(filename string) rl.Texture2D {
 	return nuTexture
 }
 
+func GetTexture2dForEdit(filename string) rl.Texture2D {
+	key := "EDIT:" + filename
+	if texture, ok := textures[key]; ok {
+		return texture
+	}
+
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+	fullPath := fmt.Sprintf("%s%s%s%s%s", exPath, string(os.PathSeparator), GetSetting[string](SettingName_AssetDirectory), string(os.PathSeparator), filename)
+
+	nuTexture := rl.LoadTexture(fullPath)
+
+	textures[key] = nuTexture
+
+	return nuTexture
+}
+
+func UnloadTexture2d(filename string) {
+	rl.UnloadTexture(textures[filename])
+	delete(textures, filename)
+}
+
+func ReloadTexture2d(filename string) {
+	UnloadTexture2d(filename)
+	GetTexture2d(filename)
+}
+
 func UnloadTextureCache() {
 	for _, texture := range textures {
 		rl.UnloadTexture(texture)

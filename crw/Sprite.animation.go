@@ -11,11 +11,24 @@ import (
 type spriteAnimType int
 type spriteAnimState int
 
+type spriteAnimation struct {
+	animationType         spriteAnimType
+	animationTime         time.Duration
+	animationDuration     time.Duration
+	animationState        spriteAnimState
+	animationStartRect    rl.Rectangle
+	animationProgressRect rl.Rectangle
+	animationOpacity      float32
+	onAnimationComplete   func()
+}
+
 const (
 	spriteAnimType_NONE     spriteAnimType = 0
 	spriteAnimType_LINEAR   spriteAnimType = 1
 	spriteAnimType_EASE_IN  spriteAnimType = 2
 	spriteAnimType_EASE_OUT spriteAnimType = 3
+	spriteAnimType_FADE_IN  spriteAnimType = 4
+	spriteAnimType_FADE_OUT spriteAnimType = 5
 
 	spriteAnimState_NONE        spriteAnimState = -1
 	spriteAnimState_INIT        spriteAnimState = 0
@@ -23,7 +36,7 @@ const (
 	spriteAnimState_COMPLETE    spriteAnimState = 2
 )
 
-func (sprite *Sprite) setupAnimation(sAnimType spriteAnimType, totalTime time.Duration, startDelta rl.Vector2) {
+func (sprite *Sprite) setupMovementAnimation(sAnimType spriteAnimType, totalTime time.Duration, startDelta rl.Vector2) {
 	sprite.animationTime = time.Duration(0)
 	sprite.animationDuration = totalTime
 
@@ -39,20 +52,39 @@ func (sprite *Sprite) setupAnimation(sAnimType spriteAnimType, totalTime time.Du
 
 func (sprite *Sprite) SetLinear(totalTime time.Duration, startDelta rl.Vector2) *spriteAnimation {
 	sprite.addToUpdateQueue(func() {
-		sprite.setupAnimation(spriteAnimType_LINEAR, totalTime, startDelta)
+		sprite.setupMovementAnimation(spriteAnimType_LINEAR, totalTime, startDelta)
 	})
 	return &sprite.spriteAnimation
 }
 
 func (sprite *Sprite) SetEaseIn(totalTime time.Duration, startDelta rl.Vector2) *spriteAnimation {
 	sprite.addToUpdateQueue(func() {
-		sprite.setupAnimation(spriteAnimType_EASE_IN, totalTime, startDelta)
+		sprite.setupMovementAnimation(spriteAnimType_EASE_IN, totalTime, startDelta)
 	})
 	return &sprite.spriteAnimation
 }
 func (sprite *Sprite) SetEaseOut(totalTime time.Duration, startDelta rl.Vector2) *spriteAnimation {
 	sprite.addToUpdateQueue(func() {
-		sprite.setupAnimation(spriteAnimType_EASE_OUT, totalTime, startDelta)
+		sprite.setupMovementAnimation(spriteAnimType_EASE_OUT, totalTime, startDelta)
+	})
+	return &sprite.spriteAnimation
+}
+
+func (sprite *Sprite) SetFadeIn(totalTime time.Duration) *spriteAnimation {
+	sprite.addToUpdateQueue(func() {
+		sprite.animationTime = time.Duration(0)
+		sprite.animationDuration = totalTime
+		sprite.animationType = spriteAnimType_FADE_IN
+		sprite.animationState = spriteAnimState_INIT
+	})
+	return &sprite.spriteAnimation
+}
+func (sprite *Sprite) SetFadeOut(totalTime time.Duration) *spriteAnimation {
+	sprite.addToUpdateQueue(func() {
+		sprite.animationTime = time.Duration(0)
+		sprite.animationDuration = totalTime
+		sprite.animationType = spriteAnimType_FADE_OUT
+		sprite.animationState = spriteAnimState_INIT
 	})
 	return &sprite.spriteAnimation
 }
@@ -70,6 +102,10 @@ func (sprite *Sprite) getAnimationDestRect() rl.Rectangle {
 }
 
 func (sprite *Sprite) updateAnimations(deltaTime time.Duration) {
+	if sprite.animationState == spriteAnimState_COMPLETE {
+		return
+	}
+
 	sprite.animationState = spriteAnimState_PROGRESSING
 	sprite.animationTime += deltaTime
 
@@ -84,22 +120,41 @@ func (sprite *Sprite) updateAnimations(deltaTime time.Duration) {
 	switch sprite.animationType {
 	case spriteAnimType_LINEAR:
 		progress = sprite.getLinearProgress(timeFraction)
+		sprite.updateAnimationPosition(progress)
 	case spriteAnimType_EASE_IN:
 		progress = sprite.getEaseInProgress(timeFraction)
+		sprite.updateAnimationPosition(progress)
 	case spriteAnimType_EASE_OUT:
 		progress = sprite.getEaseOutProgress(timeFraction)
+		sprite.updateAnimationPosition(progress)
+	case spriteAnimType_FADE_IN:
+		progress = timingLinear(timeFraction)
+		sprite.setTextureOpacity(progress)
+	case spriteAnimType_FADE_OUT:
+		progress = asOutFunction(timingLinear)(timeFraction)
+		sprite.setTextureOpacity(progress)
 	}
 
+	if timeFraction == 1 {
+		sprite.animationState = spriteAnimState_COMPLETE
+		sprite.spriteAnimation.onAnimationComplete()
+		sprite.spriteAnimation.onAnimationComplete = func() {}
+
+		switch sprite.animationType {
+		case spriteAnimType_FADE_IN:
+			sprite.reloadTexture()
+		case spriteAnimType_FADE_OUT:
+			sprite.reloadTexture()
+		}
+	}
+}
+
+func (sprite *Sprite) updateAnimationPosition(progress float64) {
 	destRect := sprite.GetWindowDestRect()
 	startRect := sprite.animationStartRect
 	diffRect := tools.RectangleSubXY(destRect, startRect)
 	sprite.animationProgressRect.X = startRect.X + float32(progress*float64(diffRect.X))
 	sprite.animationProgressRect.Y = startRect.Y + float32(progress*float64(diffRect.Y))
-
-	if timeFraction == 1 {
-		sprite.animationState = spriteAnimState_COMPLETE
-		sprite.spriteAnimation.onAnimationComplete()
-	}
 }
 
 func (sprite *Sprite) getLinearProgress(timeFraction float64) float64 {
