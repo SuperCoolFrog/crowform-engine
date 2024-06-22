@@ -269,3 +269,7 @@ func (actor *Actor) RemoveAnimation(anim *Animation) {
 func (actor *Actor) SetBorderColor(color rl.Color) {
 	actor.borderColor = color
 }
+
+func (actor *Actor) ContainsPoint(point rl.Vector2) bool {
+	return rl.CheckCollisionPointRec(point, actor.element)
+}
