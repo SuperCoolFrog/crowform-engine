@@ -271,5 +271,5 @@ func (actor *Actor) SetBorderColor(color rl.Color) {
 }
 
 func (actor *Actor) ContainsPoint(point rl.Vector2) bool {
-	return rl.CheckCollisionPointRec(point, actor.element)
+	return rl.CheckCollisionPointRec(point, actor.getCollisionElement())
 }

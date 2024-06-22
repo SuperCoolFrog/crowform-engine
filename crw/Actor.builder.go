@@ -59,6 +59,7 @@ type Actor struct {
 
 	showBorder  bool
 	borderColor rl.Color
+	Tags        []string
 }
 
 /** Builder Methods **/
@@ -91,6 +92,7 @@ func BuildActor() *ActorBuilder {
 			actions:          nil,
 			actorActionState: ActorActionState_INIT,
 			subscribers:      map[string][]func(){},
+			Tags:             make([]string, 0),
 		},
 		ignorePause: false,
 		hasActions:  false,

@@ -139,18 +139,18 @@ func (actor *Actor) GetWindowPosition() (position rl.Vector3) {
 }
 
 func (me *Actor) resortChildrenByZ() {
-	nu := make([]*Actor, len(me.Children))
+	nu := make([]*Actor, 0)
 
 	for i := range me.Children {
 		if i < len(me.Children) {
 			child := me.Children[i]
 
 			if i == 0 {
-				nu[0] = child
+				nu = append(nu, child)
 				continue
 			}
 
-			nu = tools.InsertSorted(me.Children, child, func(item *Actor) bool {
+			nu = tools.InsertSorted(nu, child, func(item *Actor) bool {
 				return item.GetWindowPosition().Z > child.GetWindowPosition().Z
 			})
 		}
