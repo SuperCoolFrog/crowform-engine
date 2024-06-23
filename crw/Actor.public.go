@@ -274,6 +274,14 @@ func (actor *Actor) ContainsPoint(point rl.Vector2) bool {
 	return rl.CheckCollisionPointRec(point, actor.getCollisionElement())
 }
 
+func (actor *Actor) CollidesWithOther(other *Actor) bool {
+	return rl.CheckCollisionRecs(other.getCollisionElement(), actor.getCollisionElement())
+}
+
+func (actor *Actor) CollidesWithRec(rec rl.Rectangle) bool {
+	return rl.CheckCollisionRecs(actor.getCollisionElement(), rec)
+}
+
 func (actor *Actor) GetWindowRec() rl.Rectangle {
 	rect := actor.element
 	winPos := actor.GetWindowPosition()
