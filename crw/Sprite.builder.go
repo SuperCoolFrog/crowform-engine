@@ -22,6 +22,8 @@ type Sprite struct {
 	texture        *rl.Texture2D
 	parent         *Actor
 	queueForUpdate []func()
+	flippedH       bool
+	flippedV       bool
 }
 
 func BuildSprite() *SpriteBuilder {

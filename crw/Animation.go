@@ -15,14 +15,24 @@ type Animation struct {
 	waitTime        time.Duration
 	waitCounter     time.Duration
 	parent          *Actor
+	flippedH        bool
+	flippedV        bool
 }
 
 func (animation *Animation) Draw() {
 	destRect := animation.GetWindowDestRect()
+	srcRect := animation.srcRect
+
+	if animation.flippedH {
+		srcRect.Width *= -1
+	}
+	if animation.flippedV {
+		srcRect.Height *= -1
+	}
 
 	rl.DrawTexturePro(
 		*animation.getTexture(),
-		animation.srcRect,
+		srcRect,
 		destRect,
 		animation.Origin,
 		animation.rotation,
@@ -114,4 +124,11 @@ func (animation *Animation) GetWindowDestRect() rl.Rectangle {
 	windowDestRec.Y += parentPos.Y
 
 	return windowDestRec
+}
+
+func (me *Animation) SetFlipHorizontal(isFlipped bool) {
+	me.flippedH = isFlipped
+}
+func (me *Animation) SetFlipVertically(isFlipped bool) {
+	me.flippedV = isFlipped
 }

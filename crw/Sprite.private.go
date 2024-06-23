@@ -19,9 +19,17 @@ func (sprite *Sprite) update(deltaTime time.Duration) {
 
 func (sprite *Sprite) draw() {
 	// destRect := sprite.GetWindowDestRect()
+	srcRect := sprite.srcRect
 	destRect := sprite.getDrawDestRect()
 
-	rl.DrawTexturePro(*sprite.getCachedTexture(), sprite.srcRect, destRect, sprite.Origin, sprite.rotation, sprite.colorTint)
+	if sprite.flippedH {
+		srcRect.Width *= -1
+	}
+	if sprite.flippedV {
+		srcRect.Height *= -1
+	}
+
+	rl.DrawTexturePro(*sprite.getCachedTexture(), srcRect, destRect, sprite.Origin, sprite.rotation, sprite.colorTint)
 }
 
 func (sprite *Sprite) setParent(parent *Actor) {

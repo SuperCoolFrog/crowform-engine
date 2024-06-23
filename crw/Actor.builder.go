@@ -124,6 +124,10 @@ func (builder *ActorBuilder) WithAllowUpdateDuringPause() *ActorBuilder {
 	builder.actor.AddQueryAttr(queryAttribute_UPDATES_WHEN_PAUSED)
 	return builder
 }
+func (builder *ActorBuilder) WithQueryAttribute(qryAttr QueryAttribute) *ActorBuilder {
+	builder.actor.AddQueryAttr(qryAttr)
+	return builder
+}
 
 func (builder *ActorBuilder) WithAction(when ActorWhenCondition, do ActorDoAction) *ActorBuilder {
 	if !builder.hasActions {

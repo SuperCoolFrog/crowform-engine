@@ -40,3 +40,10 @@ func (sprite *Sprite) SetY(y float32) {
 func (sprite *Sprite) SetX(x float32) {
 	sprite.DestRect.X = x
 }
+
+func (me *Sprite) SetFlipHorizontal(isFlipped bool) {
+	me.flippedH = isFlipped
+}
+func (me *Sprite) SetFlipVertically(isFlipped bool) {
+	me.flippedV = isFlipped
+}
