@@ -2,7 +2,6 @@ package crw
 
 import (
 	"crowform/internal/tools"
-	"sort"
 	"time"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -42,52 +41,6 @@ func (actor *Actor) updateSprites(deltaTime time.Duration) {
 	}
 }
 
-func (actor *Actor) doActions(deltaTime time.Duration, allActions []ActorAction, idx int, onComplete func()) {
-	if idx > len(allActions)-1 {
-		onComplete()
-		return
-	}
-
-	allActions[idx].do(deltaTime, actor, func() {
-		actor.doActions(deltaTime, allActions, idx+1, onComplete)
-	})
-}
-
-func (actor *Actor) ActionsSetAsReady() {
-	actor.actorActionState = ActorActionState_READY
-}
-
-func (actor *Actor) ActionsSetAsProcessing() {
-	actor.actorActionState = ActorActionState_PROCESSING
-}
-
-func (actor *Actor) ActionsSetAsStop() {
-	actor.actorActionState = ActorActionState_STOP
-}
-
-func (actor *Actor) runActions(deltaTime time.Duration) {
-	if actor.actorActionState != ActorActionState_READY {
-		return
-	}
-
-	actor.ActionsSetAsProcessing()
-
-	actions := tools.FilterSlice(actor.actions, func(a ActorAction) bool { return a.when(actor) })
-
-	if len(actions) == 0 {
-		actor.ActionsSetAsReady()
-		return
-	}
-
-	sort.Slice(actions, func(i, j int) bool {
-		return actions[i].index < actions[j].index
-	})
-
-	actor.doActions(deltaTime, actions, 0, func() {
-		actor.ActionsSetAsReady()
-	})
-}
-
 func (actor *Actor) getCollisionElement() rl.Rectangle {
 	if !actor.CollisionElement.HasValue() {
 		return actor.GetWindowRec()
@@ -105,37 +58,6 @@ func (actor *Actor) getCollisionElement() rl.Rectangle {
 	}
 
 	return e
-}
-
-func (actor *Actor) GetWindowRec() rl.Rectangle {
-	rect := actor.element
-	winPos := actor.GetWindowPosition()
-
-	rect.X = winPos.X
-	rect.Y = winPos.Y
-
-	return rect
-}
-
-func (actor *Actor) GetWindowPosition() (position rl.Vector3) {
-	position.X = actor.position.X
-	position.Y = actor.position.Y
-	position.Z = actor.position.Z
-
-	if actor.parent != nil {
-		parentPos := actor.parent.GetWindowPosition()
-
-		position.X += parentPos.X
-		position.Y += parentPos.Y
-
-		if position.Z > 0 || position.Z < 0 {
-			position.Z = parentPos.Z + position.Z
-		} else {
-			position.Z = parentPos.Z + 1
-		}
-	}
-
-	return position
 }
 
 func (me *Actor) resortChildrenByZ() {

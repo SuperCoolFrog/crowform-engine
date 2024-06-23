@@ -273,3 +273,34 @@ func (actor *Actor) SetBorderColor(color rl.Color) {
 func (actor *Actor) ContainsPoint(point rl.Vector2) bool {
 	return rl.CheckCollisionPointRec(point, actor.getCollisionElement())
 }
+
+func (actor *Actor) GetWindowRec() rl.Rectangle {
+	rect := actor.element
+	winPos := actor.GetWindowPosition()
+
+	rect.X = winPos.X
+	rect.Y = winPos.Y
+
+	return rect
+}
+
+func (actor *Actor) GetWindowPosition() (position rl.Vector3) {
+	position.X = actor.position.X
+	position.Y = actor.position.Y
+	position.Z = actor.position.Z
+
+	if actor.parent != nil {
+		parentPos := actor.parent.GetWindowPosition()
+
+		position.X += parentPos.X
+		position.Y += parentPos.Y
+
+		if position.Z > 0 || position.Z < 0 {
+			position.Z = parentPos.Z + position.Z
+		} else {
+			position.Z = parentPos.Z + 1
+		}
+	}
+
+	return position
+}
