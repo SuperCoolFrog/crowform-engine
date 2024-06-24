@@ -132,3 +132,11 @@ func (me *Animation) SetFlipHorizontal(isFlipped bool) {
 func (me *Animation) SetFlipVertically(isFlipped bool) {
 	me.flippedV = isFlipped
 }
+
+func (me *Animation) SetPlayOnce(playOnce bool) {
+	me.playOnce = playOnce
+}
+
+func (me *Animation) SetOnComplete(onComplete func()) {
+	me.onComplete = onComplete
+}
