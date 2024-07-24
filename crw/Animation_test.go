@@ -139,3 +139,57 @@ func TestAnimationUpdateSrcRectLoops(t *testing.T) {
 
 	log.Output(1, "[PASS]: TestAnimationUpdateSrcRectLoops")
 }
+
+func TestAnimationCallOnce(t *testing.T) {
+	anim := BuildAnimation().
+		WithSourceRect(0, 0, 10, 10).
+		WithDestRect(0, 0, 10, 10).
+		WithFramePerSec(1).
+		WithFrame(0, 0).
+		WithFrame(1, 3).
+		WithFrame(2, 4).
+		Build()
+	anim.SetPlayOnce(true)
+	anim.SetOnComplete(func() {})
+
+	anim.update(time.Second)
+	anim.update(time.Second)
+	anim.update(time.Second)
+	anim.update(time.Second)
+
+	actualRect := anim.GetCurrentSrcRect()
+
+	if actualRect.X != 20 || actualRect.Y != 40 {
+		t.Fatalf("Failed Calling Once Src Rect Actual {X: %f, Y: %f}, expected {X: 2, Y: 4},", actualRect.X, actualRect.Y)
+	}
+
+	log.Output(1, "[PASS]: TestAnimationCallOnce")
+}
+
+func TestAnimationOnCompleteCalled(t *testing.T) {
+	expected := true
+	actual := false
+	anim := BuildAnimation().
+		WithSourceRect(0, 0, 10, 10).
+		WithDestRect(0, 0, 10, 10).
+		WithFramePerSec(1).
+		WithFrame(0, 0).
+		WithFrame(1, 3).
+		WithFrame(2, 4).
+		Build()
+	anim.SetPlayOnce(true)
+	anim.SetOnComplete(func() {
+		actual = expected
+	})
+
+	anim.update(time.Second)
+	anim.update(time.Second)
+	anim.update(time.Second)
+	anim.update(time.Second)
+
+	if actual != expected {
+		t.Fatalf("Failed Calling OnComplete")
+	}
+
+	log.Output(1, "[PASS]: TestAnimationOnCompleteCalled")
+}
