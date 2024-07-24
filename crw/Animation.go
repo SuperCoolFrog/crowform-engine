@@ -43,6 +43,7 @@ func (animation *Animation) getTexture() *rl.Texture2D {
 	if animation.loadedTexture == nil {
 		texture := cache.GetTexture2d(animation.textureFileName)
 		animation.loadedTexture = &texture
+		rl.SetTextureFilter(*animation.loadedTexture, rl.FilterBilinear)
 	}
 
 	return animation.loadedTexture
