@@ -47,7 +47,12 @@ func (actor *Actor) doActions(deltaTime time.Duration, allActions []ActorAction,
 		return
 	}
 
-	allActions[idx].do(deltaTime, actor, func() {
+	// Check if still valid when - can change based on other actions run
+	if allActions[idx].when(actor) {
+		allActions[idx].do(deltaTime, actor, func() {
+			actor.doActions(deltaTime, allActions, idx+1, onComplete)
+		})
+	} else {
 		actor.doActions(deltaTime, allActions, idx+1, onComplete)
-	})
+	}
 }
