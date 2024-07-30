@@ -150,6 +150,11 @@ func (actor *Actor) AddChild(child *Actor) {
 			return item.GetWindowPosition().Z > child.GetWindowPosition().Z
 		})
 	child.parent = actor
+	child.onParentAdded(actor)
+}
+
+func (actor *Actor) SetOnParentAdded(handler func(parent *Actor)) {
+	actor.onParentAdded = handler
 }
 
 func (me *Actor) Intersects(other *Actor) bool {

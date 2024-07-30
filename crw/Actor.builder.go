@@ -45,10 +45,11 @@ type Actor struct {
 	CollisionElement tools.Maybe[rl.Rectangle]
 	Scene            *Scene
 
-	parent   *Actor
-	element  rl.Rectangle
-	position rl.Vector3
-	onUpdate func(deltaTime time.Duration)
+	parent        *Actor
+	element       rl.Rectangle
+	position      rl.Vector3
+	onUpdate      func(deltaTime time.Duration)
+	onParentAdded func(parent *Actor)
 
 	events ActorEventHandlers
 
@@ -76,10 +77,11 @@ func BuildActor() *ActorBuilder {
 			Children:        make([]*Actor, 0),
 			QueryAttributes: make([]QueryAttribute, 0),
 
-			position:    rl.Vector3{},
-			element:     rl.Rectangle{},
-			onUpdate:    func(deltaTime time.Duration) {},
-			borderColor: rl.Black,
+			position:      rl.Vector3{},
+			element:       rl.Rectangle{},
+			onUpdate:      func(deltaTime time.Duration) {},
+			onParentAdded: func(parent *Actor) {},
+			borderColor:   rl.Black,
 			events: ActorEventHandlers{
 				onMouseDown:  func(mousePos rl.Vector2) bool { return true },
 				onMouseUp:    func(mousePos rl.Vector2) bool { return true },
