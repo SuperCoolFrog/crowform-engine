@@ -63,5 +63,13 @@ func (builder *AnimationBuilder) WithPlayOnce(then func()) *AnimationBuilder {
 func (builder *AnimationBuilder) Build() *Animation {
 	builder.Animation.waitTime = time.Duration(float64(time.Second) / float64(builder.Animation.framesPerSecond))
 	builder.Animation.waitCounter = time.Duration(0)
+
+	if len(builder.Animation.frames) > 0 {
+		firstFrame := builder.Animation.frames[0]
+
+		builder.Animation.srcRect.X = firstFrame.X * builder.Animation.srcRect.Width
+		builder.Animation.srcRect.Y = firstFrame.Y * builder.Animation.srcRect.Height
+	}
+
 	return builder.Animation
 }

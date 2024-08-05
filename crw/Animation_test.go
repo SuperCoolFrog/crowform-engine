@@ -193,3 +193,37 @@ func TestAnimationOnCompleteCalled(t *testing.T) {
 
 	log.Output(1, "[PASS]: TestAnimationOnCompleteCalled")
 }
+
+func TestAnimationFrameNonZeroXStartNoUpdate(t *testing.T) {
+	expected := float32(20)
+	anim := BuildAnimation().
+		WithSourceRect(0, 0, 10, 10).
+		WithDestRect(0, 0, 10, 10).
+		WithFramePerSec(1).
+		WithFrame(2, 0).
+		Build()
+	actual := anim.srcRect.X
+
+	if actual != expected {
+		t.Fatalf("Animation Start with Non Zero X fail -- expected %f, actual %f", expected, actual)
+	}
+
+	log.Output(1, "[PASS]: TestAnimationFrameNonZeroXStartNoUpdate")
+}
+
+func TestAnimationFrameNonZeroYStartNoUpdate(t *testing.T) {
+	expected := float32(30)
+	anim := BuildAnimation().
+		WithSourceRect(0, 0, 10, 10).
+		WithDestRect(0, 0, 10, 10).
+		WithFramePerSec(1).
+		WithFrame(0, 3).
+		Build()
+	actual := anim.srcRect.Y
+
+	if actual != expected {
+		t.Fatalf("Animation Start with Non Zero Y fail -- expected %f, actual %f", expected, actual)
+	}
+
+	log.Output(1, "[PASS]: TestAnimationFrameNonZeroYStartNoUpdate")
+}
