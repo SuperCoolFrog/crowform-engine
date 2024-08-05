@@ -8,7 +8,19 @@ import (
 )
 
 type Animation struct {
-	AnimationBuilder
+	// AnimationBuilder
+
+	textureFileName string
+	Origin          rl.Vector2
+	srcRect         rl.Rectangle
+	DestRect        rl.Rectangle
+	rotation        float32
+	colorTint       rl.Color
+	frames          []rl.Vector2
+	playOnce        bool
+	onComplete      func()
+	framesPerSecond int32
+
 	loadedTexture   *rl.Texture2D
 	currentFrameIdx int
 	complete        bool

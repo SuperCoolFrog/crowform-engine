@@ -7,70 +7,61 @@ import (
 )
 
 type AnimationBuilder struct {
-	textureFileName string
-	Origin          rl.Vector2
-	srcRect         rl.Rectangle
-	DestRect        rl.Rectangle
-	rotation        float32
-	colorTint       rl.Color
-	frames          []rl.Vector2
-	playOnce        bool
-	onComplete      func()
-	framesPerSecond int32
+	Animation *Animation
 }
 
 func BuildAnimation() *AnimationBuilder {
 	return &AnimationBuilder{
-		textureFileName: "",
-		Origin:          rl.Vector2{X: 0, Y: 0},
-		srcRect:         rl.Rectangle{X: 0, Y: 0, Width: 0, Height: 0},
-		DestRect:        rl.Rectangle{X: 0, Y: 0, Width: 0, Height: 0},
-		rotation:        0,
-		colorTint:       rl.White,
-		frames:          make([]rl.Vector2, 0),
+		Animation: &Animation{
+			textureFileName: "",
+			Origin:          rl.Vector2{X: 0, Y: 0},
+			srcRect:         rl.Rectangle{X: 0, Y: 0, Width: 0, Height: 0},
+			DestRect:        rl.Rectangle{X: 0, Y: 0, Width: 0, Height: 0},
+			rotation:        0,
+			colorTint:       rl.White,
+			frames:          make([]rl.Vector2, 0),
+		},
 	}
 }
 
 func (builder *AnimationBuilder) WithTexture(filename string) *AnimationBuilder {
-	builder.textureFileName = filename
+	builder.Animation.textureFileName = filename
 	return builder
 }
 func (builder *AnimationBuilder) WithFramePerSec(fps int32) *AnimationBuilder {
-	builder.framesPerSecond = fps
+	builder.Animation.framesPerSecond = fps
 	return builder
 }
 
 func (builder *AnimationBuilder) WithSourceRect(x float32, y float32, width float32, height float32) *AnimationBuilder {
-	builder.srcRect = rl.Rectangle{X: x, Y: y, Width: width, Height: height}
+	builder.Animation.srcRect = rl.Rectangle{X: x, Y: y, Width: width, Height: height}
 	return builder
 }
 func (builder *AnimationBuilder) WithDestRect(x float32, y float32, width float32, height float32) *AnimationBuilder {
-	builder.DestRect = rl.Rectangle{X: x, Y: y, Width: width, Height: height}
+	builder.Animation.DestRect = rl.Rectangle{X: x, Y: y, Width: width, Height: height}
 	return builder
 }
 
 func (builder *AnimationBuilder) WithRotation(rotation float32) *AnimationBuilder {
-	builder.rotation = rotation
+	builder.Animation.rotation = rotation
 	return builder
 }
 func (builder *AnimationBuilder) WithColorTint(color rl.Color) *AnimationBuilder {
-	builder.colorTint = color
+	builder.Animation.colorTint = color
 	return builder
 }
 func (builder *AnimationBuilder) WithFrame(frameX float32, frameY float32) *AnimationBuilder {
-	builder.frames = append(builder.frames, rl.Vector2{X: frameX, Y: frameY})
+	builder.Animation.frames = append(builder.Animation.frames, rl.Vector2{X: frameX, Y: frameY})
 	return builder
 }
 func (builder *AnimationBuilder) WithPlayOnce(then func()) *AnimationBuilder {
-	builder.playOnce = true
-	builder.onComplete = then
+	builder.Animation.playOnce = true
+	builder.Animation.onComplete = then
 	return builder
 }
 
 func (builder *AnimationBuilder) Build() *Animation {
-	return &Animation{
-		AnimationBuilder: *builder,
-		waitTime:         time.Duration(float64(time.Second) / float64(builder.framesPerSecond)),
-		waitCounter:      time.Duration(0),
-	}
+	builder.Animation.waitTime = time.Duration(float64(time.Second) / float64(builder.Animation.framesPerSecond))
+	builder.Animation.waitCounter = time.Duration(0)
+	return builder.Animation
 }
