@@ -128,3 +128,7 @@ func (scene *Scene) ChangeMouseTexture(sprite *Sprite) {
 	scene.mousePointer = mouse
 	scene.AddChild(mouse)
 }
+
+func (scene *Scene) GetGame() *Game {
+	return scene.parentGame
+}
