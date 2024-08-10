@@ -42,11 +42,12 @@ func (actor *Actor) updateSprites(deltaTime time.Duration) {
 }
 
 func (actor *Actor) runUpdateQueue() {
-	tools.ForEach(actor.queueForUpdate, func(f func()) {
-		f()
-	})
-
-	actor.queueForUpdate = nil
+	// Updates can cause change in queue
+	for len(actor.queueForUpdate) > 0 {
+		upd := actor.queueForUpdate[0]
+		actor.queueForUpdate = actor.queueForUpdate[1:]
+		upd()
+	}
 }
 
 func (actor *Actor) getCollisionElement() rl.Rectangle {
