@@ -84,6 +84,8 @@ func (scene *Scene) Update(deltaTime time.Duration) {
 		return
 	}
 
+	scene.runUpdateQueue()
+
 	actorsToUpdate := scene.QueryAny([]QueryAttribute{
 		queryAttribute_UPDATES_WHEN_PAUSED,
 	})
