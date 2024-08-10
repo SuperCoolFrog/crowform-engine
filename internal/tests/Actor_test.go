@@ -384,6 +384,7 @@ func TestWindowPositionForChildSpriteWhenAdded(t *testing.T) {
 	sprite1 := crw.BuildSprite().WithDestRect(5, 10, 1, 1).Build()
 
 	a1.AddSprite(sprite1)
+	a1.Update(time.Second)
 
 	if sprite1.GetWindowDestRect().X != 15 {
 		t.Fatalf("Expected child sprite X to be 15, actual %f", sprite1.GetWindowDestRect().X)
@@ -402,6 +403,7 @@ func TestWindowPositionForChildSpriteWhenUpdated(t *testing.T) {
 	a1.AddSprite(sprite1)
 	a1.SetX(10)
 	a1.SetY(20)
+	a1.Update(time.Second)
 
 	if sprite1.GetWindowDestRect().X != 15 {
 		t.Fatalf("Expected child sprite X to be 15, actual %f", sprite1.GetWindowDestRect().X)
@@ -435,6 +437,7 @@ func TestWindowPositionForChildAnimationWhenAdded(t *testing.T) {
 	anim1 := crw.BuildAnimation().WithDestRect(5, 10, 1, 1).Build()
 
 	a1.AddAnimation(anim1)
+	a1.Update(time.Second)
 
 	if anim1.GetWindowDestRect().X != 15 {
 		t.Fatalf("Expected child animation X to be 15, actual %f", anim1.GetWindowDestRect().X)
@@ -453,6 +456,7 @@ func TestWindowPositionForChildAnimationWhenUpdated(t *testing.T) {
 	a1.AddAnimation(animation1)
 	a1.SetX(10)
 	a1.SetY(20)
+	a1.Update(time.Second)
 
 	if animation1.GetWindowDestRect().X != 15 {
 		t.Fatalf("Expected child animation X to be 15, actual %f", animation1.GetWindowDestRect().X)

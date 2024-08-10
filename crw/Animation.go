@@ -76,6 +76,10 @@ func (animation *Animation) update(deltaTime time.Duration) {
 }
 
 func (animation *Animation) updateFrame() {
+	if len(animation.frames) == 0 {
+		return
+	}
+
 	if animation.currentFrameIdx == len(animation.frames)-1 {
 		if !animation.playOnce {
 			animation.currentFrameIdx = 0

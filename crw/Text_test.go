@@ -3,6 +3,7 @@ package crw
 import (
 	"log"
 	"testing"
+	"time"
 )
 
 // Text
@@ -27,6 +28,7 @@ func TestWindowPositionForChildTextWhenAdded(t *testing.T) {
 	text := BuildText().WithPosition(5, 10).Build()
 
 	a1.AddText(text)
+	a1.Update(time.Second)
 
 	if text.GetWindowPos().X != 15 {
 		t.Fatalf("Expected child text X to be 15, actual %f", text.GetWindowPos().X)
@@ -45,6 +47,7 @@ func TestWindowPositionForChildTextWhenUpdated(t *testing.T) {
 	a1.AddText(text)
 	a1.SetX(10)
 	a1.SetY(20)
+	a1.Update(time.Second)
 
 	if text.GetWindowPos().X != 15 {
 		t.Fatalf("Expected child text X to be 15, actual %f", text.GetWindowPos().X)
@@ -61,6 +64,7 @@ func TestTextVAlignTop(t *testing.T) {
 	text := BuildText().WithPosition(5, 10).Build()
 
 	a1.AddText(text)
+	a1.Update(time.Second)
 	text.VAlignTop()
 	text.update()
 
@@ -76,6 +80,7 @@ func TestTextHAlignLeft(t *testing.T) {
 	text := BuildText().WithPosition(5, 10).Build()
 
 	a1.AddText(text)
+	a1.Update(time.Second)
 	text.HAlignLeft()
 	text.update()
 

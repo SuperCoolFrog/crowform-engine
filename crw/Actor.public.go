@@ -202,19 +202,28 @@ func (actor *Actor) IsQryType(qryType QueryAttribute) bool {
 }
 
 func (actor *Actor) AddSprite(sprite *Sprite) {
-	sprite.setParent(actor)
-	actor.Sprites = append(actor.Sprites, sprite)
+	actor.queueForUpdate = append(actor.queueForUpdate, func() {
+		sprite.setParent(actor)
+		actor.Sprites = append(actor.Sprites, sprite)
+	})
 }
-func (me *Actor) RemoveSprite(spriteToRemove *Sprite) {
-	me.Sprites = tools.RemoveAll(me.Sprites, spriteToRemove)
+func (actor *Actor) RemoveSprite(spriteToRemove *Sprite) {
+	actor.queueForUpdate = append(actor.queueForUpdate, func() {
+		actor.Sprites = tools.RemoveAll(actor.Sprites, spriteToRemove)
+	})
 }
 
 func (actor *Actor) AddText(text *Text) {
-	text.SetParent(actor)
-	actor.Texts = append(actor.Texts, text)
+	actor.queueForUpdate = append(actor.queueForUpdate, func() {
+		text.SetParent(actor)
+		actor.Texts = append(actor.Texts, text)
+	})
 }
-func (me *Actor) RemoveText(textToRemove *Text) {
-	me.Texts = tools.RemoveAll(me.Texts, textToRemove)
+
+func (actor *Actor) RemoveText(textToRemove *Text) {
+	actor.queueForUpdate = append(actor.queueForUpdate, func() {
+		actor.Texts = tools.RemoveAll(actor.Texts, textToRemove)
+	})
 }
 
 func (actor *Actor) HasParent() bool {
@@ -258,12 +267,16 @@ func (actor *Actor) HideBorder() {
 }
 
 func (actor *Actor) AddAnimation(animation *Animation) {
-	animation.SetParent(actor)
-	actor.Animations = append(actor.Animations, animation)
+	actor.queueForUpdate = append(actor.queueForUpdate, func() {
+		animation.SetParent(actor)
+		actor.Animations = append(actor.Animations, animation)
+	})
 }
 
 func (actor *Actor) RemoveAnimation(anim *Animation) {
-	actor.Animations = tools.Remove(actor.Animations, anim)
+	actor.queueForUpdate = append(actor.queueForUpdate, func() {
+		actor.Animations = tools.Remove(actor.Animations, anim)
+	})
 }
 
 func (actor *Actor) SetBorderColor(color rl.Color) {
