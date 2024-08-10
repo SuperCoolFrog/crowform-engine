@@ -61,6 +61,8 @@ type Actor struct {
 	showBorder  bool
 	borderColor rl.Color
 	Tags        []string
+
+	queueForUpdate []func()
 }
 
 /** Builder Methods **/
@@ -91,10 +93,11 @@ func BuildActor() *ActorBuilder {
 				defined:      make(map[QueryAttribute]func(params interface{})),
 				onKeyPressed: make(map[int32]func() bool),
 			},
-			actions:          nil,
+			actions:          make([]ActorAction, 0),
 			actorActionState: ActorActionState_INIT,
 			subscribers:      map[string][]func(){},
 			Tags:             make([]string, 0),
+			queueForUpdate:   make([]func(), 0),
 		},
 		ignorePause: false,
 		hasActions:  false,

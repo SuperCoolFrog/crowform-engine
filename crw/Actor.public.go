@@ -12,6 +12,7 @@ import (
 /** -- Loop Func **/
 
 func (actor *Actor) Update(deltaTime time.Duration) {
+	actor.runUpdateQueue()
 	actor.onUpdate(deltaTime)
 	actor.runActions(deltaTime)
 	actor.updateAnimations(deltaTime)
@@ -69,6 +70,9 @@ func (actor *Actor) X() float32 {
 // Shorthand for actor.GetPosition().Y
 func (actor *Actor) Y() float32 {
 	return actor.GetPosition().Y
+}
+func (actor *Actor) Z() float32 {
+	return actor.GetPosition().Z
 }
 
 // Updates Element Width
@@ -128,29 +132,9 @@ func (actor *Actor) SetXYZ(x float32, y float32, z float32) {
 }
 
 func (actor *Actor) AddChild(child *Actor) {
-	if child.position.Z == 0 {
-		var minNext float32 = 1
-
-		tools.ForEach(actor.Children, func(a *Actor) {
-			next := a.GetWindowPosition().Z
-			if minNext < next {
-				if next >= SCENE_MOUSE_ZINDEX {
-					return
-				} else {
-					minNext = next
-				}
-			}
-		})
-
-		child.position.Z = minNext + 1
-	}
-
-	actor.Children = tools.InsertSorted(actor.Children, child,
-		func(item *Actor) bool {
-			return item.GetWindowPosition().Z > child.GetWindowPosition().Z
-		})
-	child.parent = actor
-	child.onParentAdded(actor)
+	actor.queueForUpdate = append(actor.queueForUpdate, func() {
+		actor.addChild(child)
+	})
 }
 
 func (actor *Actor) SetOnParentAdded(handler func(parent *Actor)) {
@@ -242,11 +226,22 @@ func (actor *Actor) GetParent() *Actor {
 }
 
 func (actor *Actor) RemoveChild(child *Actor) {
+	actor.queueForUpdate = append(actor.queueForUpdate, func() {
+		actor.removeChild(child)
+	})
+}
+func (actor *Actor) removeChild(child *Actor) {
 	actor.Children = tools.Remove(actor.Children, child)
 	child.parent = nil
 }
 
 func (actor *Actor) RemoveSelf() {
+	actor.queueForUpdate = append(actor.queueForUpdate, func() {
+		actor.removeSelf()
+	})
+}
+
+func (actor *Actor) removeSelf() {
 	if actor.parent == nil {
 		return
 	}

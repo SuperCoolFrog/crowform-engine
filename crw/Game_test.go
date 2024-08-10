@@ -4,6 +4,7 @@ import (
 	"crowform/internal/tools"
 	"log"
 	"testing"
+	"time"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -29,7 +30,9 @@ func TestClickEventNoBubble(t *testing.T) {
 
 	scene1.AddChild(a1)
 	scene1.AddChild(a2)
+	scene1.Update(time.Second)
 	game.GoToScene("s1")
+	scene1.Update(time.Second)
 	game.handleMouseLeftClick(rl.Vector2{X: 100, Y: 100})
 
 	if res != expected {
@@ -53,7 +56,9 @@ func TestClickCallsHandlerOnceWhileDown(t *testing.T) {
 	scene1 := BuildScene("s1", game).Build()
 
 	scene1.AddChild(a2)
+	scene1.Update(time.Second)
 	game.GoToScene("s1")
+	scene1.Update(time.Second)
 
 	game.handleMouseLeftClick(rl.Vector2{X: 100, Y: 100})
 	game.handleMouseLeftClick(rl.Vector2{X: 100, Y: 100})
@@ -81,7 +86,9 @@ func TestClickCallsHandlerAfterReleased(t *testing.T) {
 	scene1 := BuildScene("s1", game).Build()
 
 	scene1.AddChild(a2)
+	scene1.Update(time.Second)
 	game.GoToScene("s1")
+	scene1.Update(time.Second)
 
 	game.handleMouseLeftClick(rl.Vector2{X: 100, Y: 100})
 	game.handleMouseLeftRelease(rl.Vector2{X: 100, Y: 100})
@@ -115,7 +122,9 @@ func TestClickEventBubble(t *testing.T) {
 
 	scene1.AddChild(a1)
 	scene1.AddChild(a2)
+	scene1.Update(time.Second)
 	game.GoToScene("s1")
+	scene1.Update(time.Second)
 	game.handleMouseLeftClick(rl.Vector2{X: 100, Y: 100})
 
 	if res != expected {
@@ -139,7 +148,9 @@ func TestKeyEvent(t *testing.T) {
 	scene1 := BuildScene("s1", game).Build()
 
 	scene1.AddChild(a1)
+	scene1.Update(time.Second)
 	game.GoToScene("s1")
+	scene1.Update(time.Second)
 	game.handleKeyPressed(rl.KeyA)
 
 	if res != expected {
@@ -169,8 +180,10 @@ func TestKeyEventBubble(t *testing.T) {
 
 	scene1.AddChild(a1)
 	scene1.AddChild(a2)
+	scene1.Update(time.Second)
 	game.GoToScene("s1")
 	game.handleKeyPressed(rl.KeyA)
+	scene1.Update(time.Second)
 
 	if tools.IndexOf(res, 1) == -1 || tools.IndexOf(res, 2) == -1 {
 		t.Fatalf("Key Bubble failed - actual %v, expected %v", res, expected)

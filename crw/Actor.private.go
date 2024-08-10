@@ -41,6 +41,14 @@ func (actor *Actor) updateSprites(deltaTime time.Duration) {
 	}
 }
 
+func (actor *Actor) runUpdateQueue() {
+	tools.ForEach(actor.queueForUpdate, func(f func()) {
+		f()
+	})
+
+	actor.queueForUpdate = nil
+}
+
 func (actor *Actor) getCollisionElement() rl.Rectangle {
 	if !actor.CollisionElement.HasValue() {
 		return actor.GetWindowRec()
@@ -83,4 +91,30 @@ func (me *Actor) resortChildrenByZ() {
 	tools.ForEach(nu, func(a *Actor) {
 		me.AddChild(a)
 	})
+}
+
+func (actor *Actor) addChild(child *Actor) {
+	if child.position.Z == 0 {
+		var minNext float32 = 1
+
+		tools.ForEach(actor.Children, func(a *Actor) {
+			next := a.GetWindowPosition().Z
+			if minNext < next {
+				if next >= SCENE_MOUSE_ZINDEX {
+					return
+				} else {
+					minNext = next
+				}
+			}
+		})
+
+		child.position.Z = minNext + 1
+	}
+
+	actor.Children = tools.InsertSorted(actor.Children, child,
+		func(item *Actor) bool {
+			return item.GetWindowPosition().Z > child.GetWindowPosition().Z
+		})
+	child.parent = actor
+	child.onParentAdded(actor)
 }

@@ -21,6 +21,7 @@ func TestActorQueryIncludesSelf(t *testing.T) {
 
 	a1.AddChild(a2)
 	a1.AddChild(a3)
+	a1.Update(time.Second)
 
 	q := []crw.QueryAttribute{Solid}
 	res := a1.QueryAny(q)
@@ -45,6 +46,7 @@ func TestActorQueryChildrenWithoutSelf(t *testing.T) {
 
 	a1.AddChild(a2)
 	a1.AddChild(a3)
+	a1.Update(time.Second)
 
 	q := []crw.QueryAttribute{Solid}
 	res := a1.QueryAny(q)
@@ -63,6 +65,7 @@ func TestActorAddChildZOrderAsc(t *testing.T) {
 
 	a1.AddChild(a2)
 	a1.AddChild(a3)
+	a1.Update(time.Second)
 
 	if a1.Children[0] != a2 {
 		t.Fatalf("Test ChildZ returns incorrect results: expected [a2] at index [0]")
@@ -81,6 +84,7 @@ func TestActorAddChildZOrderDesc(t *testing.T) {
 
 	a1.AddChild(a2)
 	a1.AddChild(a3)
+	a1.Update(time.Second)
 
 	if a1.Children[0] != a3 {
 		t.Fatalf("Test ChildZ returns incorrect results: expected [a3] at index [0]")
@@ -100,6 +104,7 @@ func TestActorAddChildZDefault(t *testing.T) {
 
 	a1.AddChild(a2)
 	a1.AddChild(a3)
+	a1.Update(time.Second)
 
 	if a1.Children[0] != a2 {
 		t.Fatalf("Test ChildZ returns incorrect results: expected [a2] at index [0]")
@@ -121,6 +126,7 @@ func TestActorAddChildZDefaultWithMouseZ(t *testing.T) {
 	a1.AddChild(mouse)
 	a1.AddChild(a2)
 	a1.AddChild(a3)
+	a1.Update(time.Second)
 
 	if a1.Children[0] != a2 {
 		t.Fatalf("Test ChildZ returns incorrect results: expected [a2] at index [0]")
@@ -255,7 +261,9 @@ func TestRemoveChild(t *testing.T) {
 	c1 := crw.BuildActor().Build()
 
 	a1.AddChild(c1)
+	a1.Update(time.Second)
 	a1.RemoveChild(c1)
+	a1.Update(time.Second)
 
 	actual := len(a1.Children)
 
@@ -311,6 +319,7 @@ func TestWindowPositionForChildActorWhenAdded(t *testing.T) {
 	a2 := crw.BuildActor().WithPosition(5, 10, 0).Build()
 
 	a1.AddChild(a2)
+	a1.Update(time.Second)
 
 	if a1.GetWindowPosition().X != 10 {
 		t.Fatalf("Expected parent X to remain 10, actual %f", a1.GetWindowPosition().X)
@@ -335,6 +344,7 @@ func TestWindowPositionForChildActorWhenUpdated(t *testing.T) {
 	a1.AddChild(a2)
 	a1.SetX(15)
 	a1.SetY(25)
+	a1.Update(time.Second)
 
 	if a1.GetWindowPosition().X != 15 {
 		t.Fatalf("Expected parent X to remain 15, actual %f", a1.GetWindowPosition().X)
@@ -452,4 +462,50 @@ func TestWindowPositionForChildAnimationWhenUpdated(t *testing.T) {
 	}
 
 	log.Output(1, "[PASS]: TestWindowPositionForChildAnimationWhenUpdated")
+}
+
+func TestAddChildWhileUpdateRunningActions(t *testing.T) {
+	expected := "RAN"
+	actual := "NOT RAN"
+
+	a1 := crw.BuildActor().Build()
+	c1 := crw.BuildActor().Build()
+
+	c2 := crw.BuildActor().
+		WithAction(func(actor *crw.Actor) bool { return true },
+			func(deltaTime time.Duration, actor *crw.Actor, done crw.ActorActionDone) {
+				a1.AddChild(crw.BuildActor().Build())
+				a1.AddChild(crw.BuildActor().Build())
+				a1.AddChild(crw.BuildActor().Build())
+			}).
+		Build()
+	c3 := crw.BuildActor().
+		WithAction(func(actor *crw.Actor) bool { return true },
+			func(deltaTime time.Duration, actor *crw.Actor, done crw.ActorActionDone) {
+				actual = expected
+			}).
+		Build()
+
+	a1.AddChild(c1)
+	a1.AddChild(c2)
+	a1.AddChild(c3)
+
+	c2.ActionsSetAsReady()
+	c3.ActionsSetAsReady()
+
+	a1.Update(time.Second)
+	a1.Update(time.Second)
+	a1.Update(time.Second)
+	a1.Update(time.Second)
+	a1.Update(time.Second)
+	a1.Update(time.Second)
+	a1.Update(time.Second)
+	a1.Update(time.Second)
+	a1.Update(time.Second)
+
+	if actual != expected {
+		t.Fatalf("Failed running action when child is added in other update %s, expected %s", actual, expected)
+	}
+
+	log.Output(1, "[PASS]: TestAddChildWhileUpdateRunningActions")
 }
