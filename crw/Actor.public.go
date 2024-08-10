@@ -241,6 +241,7 @@ func (actor *Actor) RemoveChild(child *Actor) {
 }
 func (actor *Actor) removeChild(child *Actor) {
 	actor.Children = tools.Remove(actor.Children, child)
+	child.runUpdateQueue()
 	child.parent = nil
 }
 
@@ -255,7 +256,7 @@ func (actor *Actor) removeSelf() {
 		return
 	}
 
-	actor.parent.RemoveChild(actor)
+	actor.parent.removeChild(actor)
 }
 
 func (actor *Actor) ShowBorder() {
