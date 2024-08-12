@@ -12,6 +12,11 @@ import (
 /** -- Loop Func **/
 
 func (actor *Actor) Update(deltaTime time.Duration) {
+	if actor.IsQryType(queryAttribute_ACTOR_REMOVED) {
+		actor.removeSelf()
+		return
+	}
+
 	actor.runUpdateQueue()
 	actor.onUpdate(deltaTime)
 	actor.runActions(deltaTime)
@@ -130,9 +135,10 @@ func (actor *Actor) SetXYZ(x float32, y float32, z float32) {
 }
 
 func (actor *Actor) AddChild(child *Actor) {
-	actor.queueForUpdate = append(actor.queueForUpdate, func() {
-		actor.addChild(child)
-	})
+	// actor.queueForUpdate = append(actor.queueForUpdate, func() {
+	child.RemoveQueryAttr(queryAttribute_ACTOR_REMOVED)
+	actor.addChild(child)
+	// })
 }
 
 func (actor *Actor) SetOnParentAdded(handler func(parent *Actor)) {
@@ -238,6 +244,7 @@ func (actor *Actor) RemoveChild(child *Actor) {
 	// })
 }
 func (actor *Actor) removeChild(child *Actor) {
+	child.AddQueryAttr(queryAttribute_ACTOR_REMOVED)
 	actor.Children = tools.Remove(actor.Children, child)
 	// child.runUpdateQueue()
 	child.parent = nil

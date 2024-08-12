@@ -19,4 +19,6 @@ const (
 	queryAttribute_RECEIVES_KEY_EVENT QueryAttribute = "queryAttribute_RECEIVES_KEY_EVENT"
 	// Update Handled
 	queryAttribute_UPDATE_HANDLED QueryAttribute = "queryAttribute_UPDATE_HANDLED"
+	// Should Be removed
+	queryAttribute_ACTOR_REMOVED QueryAttribute = "queryAttribute_ACTOR_REMOVED"
 )
