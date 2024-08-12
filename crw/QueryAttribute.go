@@ -17,4 +17,6 @@ const (
 	queryAttribute_RECEIVES_MOUSE_EXIT_EVENT QueryAttribute = "queryAttribute_RECEIVES_MOUSE_EXIT_EVENT"
 	// Internal Attribute for handling key input
 	queryAttribute_RECEIVES_KEY_EVENT QueryAttribute = "queryAttribute_RECEIVES_KEY_EVENT"
+	// Update Handled
+	queryAttribute_UPDATE_HANDLED QueryAttribute = "queryAttribute_UPDATE_HANDLED"
 )

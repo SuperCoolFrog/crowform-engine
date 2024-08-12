@@ -17,10 +17,8 @@ func (actor *Actor) Update(deltaTime time.Duration) {
 	actor.runActions(deltaTime)
 	actor.updateAnimations(deltaTime)
 	actor.updateSprites(deltaTime)
+	actor.updateChildren(deltaTime)
 
-	tools.ForEach(actor.Children, func(child *Actor) {
-		child.Update(deltaTime)
-	})
 	tools.ForEach(actor.Texts, func(t *Text) {
 		t.update()
 	})
@@ -202,28 +200,28 @@ func (actor *Actor) IsQryType(qryType QueryAttribute) bool {
 }
 
 func (actor *Actor) AddSprite(sprite *Sprite) {
-	actor.queueForUpdate = append(actor.queueForUpdate, func() {
-		sprite.setParent(actor)
-		actor.Sprites = append(actor.Sprites, sprite)
-	})
+	// actor.queueForUpdate = append(actor.queueForUpdate, func() {
+	sprite.setParent(actor)
+	actor.Sprites = append(actor.Sprites, sprite)
+	// })
 }
 func (actor *Actor) RemoveSprite(spriteToRemove *Sprite) {
-	actor.queueForUpdate = append(actor.queueForUpdate, func() {
-		actor.Sprites = tools.RemoveAll(actor.Sprites, spriteToRemove)
-	})
+	// actor.queueForUpdate = append(actor.queueForUpdate, func() {
+	actor.Sprites = tools.RemoveAll(actor.Sprites, spriteToRemove)
+	// })
 }
 
 func (actor *Actor) AddText(text *Text) {
-	actor.queueForUpdate = append(actor.queueForUpdate, func() {
-		text.SetParent(actor)
-		actor.Texts = append(actor.Texts, text)
-	})
+	// actor.queueForUpdate = append(actor.queueForUpdate, func() {
+	text.SetParent(actor)
+	actor.Texts = append(actor.Texts, text)
+	// })
 }
 
 func (actor *Actor) RemoveText(textToRemove *Text) {
-	actor.queueForUpdate = append(actor.queueForUpdate, func() {
-		actor.Texts = tools.RemoveAll(actor.Texts, textToRemove)
-	})
+	// actor.queueForUpdate = append(actor.queueForUpdate, func() {
+	actor.Texts = tools.RemoveAll(actor.Texts, textToRemove)
+	// })
 }
 
 func (actor *Actor) HasParent() bool {
@@ -235,20 +233,20 @@ func (actor *Actor) GetParent() *Actor {
 }
 
 func (actor *Actor) RemoveChild(child *Actor) {
-	actor.queueForUpdate = append(actor.queueForUpdate, func() {
-		actor.removeChild(child)
-	})
+	// actor.queueForUpdate = append(actor.queueForUpdate, func() {
+	actor.removeChild(child)
+	// })
 }
 func (actor *Actor) removeChild(child *Actor) {
 	actor.Children = tools.Remove(actor.Children, child)
-	child.runUpdateQueue()
+	// child.runUpdateQueue()
 	child.parent = nil
 }
 
 func (actor *Actor) RemoveSelf() {
-	actor.queueForUpdate = append(actor.queueForUpdate, func() {
-		actor.removeSelf()
-	})
+	// actor.queueForUpdate = append(actor.queueForUpdate, func() {
+	actor.removeSelf()
+	// })
 }
 
 func (actor *Actor) removeSelf() {
@@ -268,16 +266,16 @@ func (actor *Actor) HideBorder() {
 }
 
 func (actor *Actor) AddAnimation(animation *Animation) {
-	actor.queueForUpdate = append(actor.queueForUpdate, func() {
-		animation.SetParent(actor)
-		actor.Animations = append(actor.Animations, animation)
-	})
+	// actor.queueForUpdate = append(actor.queueForUpdate, func() {
+	animation.SetParent(actor)
+	actor.Animations = append(actor.Animations, animation)
+	// })
 }
 
 func (actor *Actor) RemoveAnimation(anim *Animation) {
-	actor.queueForUpdate = append(actor.queueForUpdate, func() {
-		actor.Animations = tools.Remove(actor.Animations, anim)
-	})
+	// actor.queueForUpdate = append(actor.queueForUpdate, func() {
+	actor.Animations = tools.Remove(actor.Animations, anim)
+	// })
 }
 
 func (actor *Actor) SetBorderColor(color rl.Color) {

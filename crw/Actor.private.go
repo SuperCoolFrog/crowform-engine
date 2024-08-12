@@ -49,6 +49,25 @@ func (actor *Actor) runUpdateQueue() {
 		upd()
 	}
 }
+func (actor *Actor) updateChildren(deltaTime time.Duration) {
+	childr := tools.FilterSlice(actor.Children, func(a *Actor) bool {
+		return !a.IsQryType(queryAttribute_UPDATE_HANDLED)
+	})
+
+	for len(childr) > 0 {
+		c := childr[0]
+		c.Update(deltaTime)
+		c.AddQueryAttr(queryAttribute_UPDATE_HANDLED)
+
+		childr = tools.FilterSlice(actor.Children, func(a *Actor) bool {
+			return !a.IsQryType(queryAttribute_UPDATE_HANDLED)
+		})
+	}
+
+	tools.ForEach(actor.Children, func(a *Actor) {
+		a.RemoveQueryAttr(queryAttribute_UPDATE_HANDLED)
+	})
+}
 
 func (actor *Actor) getCollisionElement() rl.Rectangle {
 	if !actor.CollisionElement.HasValue() {
