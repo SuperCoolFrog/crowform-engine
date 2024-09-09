@@ -10,6 +10,9 @@ func (actor *Actor) UnsetMouseDownHandler() {
 	actor.RemoveQueryAttr(queryAttribute_RECEIVES_MOUSE_DOWN_EVENT)
 	actor.events.onMouseDown = func(mousePos rl.Vector2) bool { return true }
 }
+func (actor *Actor) TriggerMouseDownHandler(mousePos rl.Vector2) {
+	actor.events.onMouseDown(mousePos)
+}
 
 func (actor *Actor) SetMouseUpHandler(handler func(mousePos rl.Vector2) bool) {
 	actor.AddQueryAttr(queryAttribute_RECEIVES_MOUSE_UP_EVENT)
@@ -18,6 +21,9 @@ func (actor *Actor) SetMouseUpHandler(handler func(mousePos rl.Vector2) bool) {
 func (actor *Actor) UnsetMouseUpHandler() {
 	actor.RemoveQueryAttr(queryAttribute_RECEIVES_MOUSE_UP_EVENT)
 	actor.events.onMouseUp = func(mousePos rl.Vector2) bool { return true }
+}
+func (actor *Actor) TriggerMouseUpHandler(mousePos rl.Vector2) {
+	actor.events.onMouseUp(mousePos)
 }
 
 func (actor *Actor) SetMouseMoveHandler(handler func(mousePos rl.Vector2) bool) {
