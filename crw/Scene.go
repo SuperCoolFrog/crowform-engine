@@ -78,6 +78,10 @@ func (scene *Scene) Unpause() {
 	scene.paused = false
 }
 
+func (scene *Scene) IsPaused() bool {
+	return scene.paused
+}
+
 func (scene *Scene) Update(deltaTime time.Duration) {
 	if !scene.paused {
 		scene.Actor.Update(deltaTime)
