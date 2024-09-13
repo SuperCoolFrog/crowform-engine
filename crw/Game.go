@@ -26,6 +26,11 @@ type Game struct {
 	lastFrameTime time.Time
 	paused        bool
 	close         bool
+
+	hasInitAudio     bool
+	hasLoadedMusic   bool
+	currentMusic     rl.Music
+	currentMusicFile string
 }
 
 func BuildGame() *GameBuilder {
@@ -95,6 +100,10 @@ func (game *Game) Start() {
 	for !(rl.WindowShouldClose() || game.close) {
 		game.checkInputEvents()
 
+		if game.hasLoadedMusic {
+			rl.UpdateMusicStream(game.currentMusic)
+		}
+
 		rl.BeginDrawing()
 
 		rl.ClearBackground(rl.Black)
@@ -106,6 +115,8 @@ func (game *Game) Start() {
 
 	cache.UnloadTextureCache()
 	cache.UnloadFontsCache()
+	game.UnloadMusic()
+	rl.CloseAudioDevice()
 }
 
 func (game *Game) AddScene(scene *Scene) {
