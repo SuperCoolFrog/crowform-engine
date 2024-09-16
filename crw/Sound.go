@@ -59,6 +59,7 @@ func (builder *GameSoundBuilder) Build() *GameSound {
 	}
 
 	gs.sound = builder.getSound()
+	rl.SetSoundVolume(gs.sound, 0.10)
 
 	return gs
 }
