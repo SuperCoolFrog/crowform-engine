@@ -27,10 +27,11 @@ type Game struct {
 	paused        bool
 	close         bool
 
-	hasInitAudio     bool
-	hasLoadedMusic   bool
-	currentMusic     rl.Music
-	currentMusicFile string
+	hasInitAudio   bool
+	hasLoadedMusic bool
+	currentMusic   rl.Music
+
+	soundQ []rl.Sound
 }
 
 func BuildGame() *GameBuilder {
@@ -74,6 +75,7 @@ func (builder *GameBuilder) Build() *Game {
 		scenes:       make(map[SceneUniqId]*Scene),
 		paused:       false,
 		close:        false,
+		soundQ:       make([]rl.Sound, 0),
 	}
 }
 
@@ -104,6 +106,8 @@ func (game *Game) Start() {
 			rl.UpdateMusicStream(game.currentMusic)
 		}
 
+		game.playAllSounds()
+
 		rl.BeginDrawing()
 
 		rl.ClearBackground(rl.Black)
@@ -116,6 +120,7 @@ func (game *Game) Start() {
 	cache.UnloadTextureCache()
 	cache.UnloadFontsCache()
 	game.UnloadMusic()
+	unloadSoundsCache()
 	rl.CloseAudioDevice()
 }
 
@@ -164,4 +169,23 @@ func (game *Game) endScene() {
 
 func (game *Game) Shutdown() {
 	game.close = true
+}
+
+func (game *Game) addSoundToQ(sound rl.Sound) {
+	mog.Verbose("Adding Sound")
+	game.soundQ = append(game.soundQ, sound)
+	mog.Verbose("After: %d", len(game.soundQ))
+}
+
+func (game *Game) playAllSounds() {
+	for i := range game.soundQ {
+		if i < len(game.soundQ) {
+			mog.Verbose("Playing Sound: %d", i)
+			rl.PlaySound(game.soundQ[i])
+		} else {
+			break
+		}
+	}
+
+	game.soundQ = nil
 }
