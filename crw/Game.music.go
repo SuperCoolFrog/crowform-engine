@@ -35,7 +35,7 @@ func (game *Game) PlayWav(filename string) {
 
 	game.currentMusic = rl.LoadMusicStream(fullPath)
 	game.hasLoadedMusic = true
-	rl.SetMusicVolume(game.currentMusic, 0.10)
+	rl.SetMusicVolume(game.currentMusic, 0.35)
 	rl.PlayMusicStream(game.currentMusic)
 	// rl.ResumeMusicStream(game.currentMusic)
 }

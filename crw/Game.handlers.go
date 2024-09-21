@@ -107,10 +107,6 @@ func (game *Game) handleMouseEnter(mousePos rl.Vector2) {
 		return
 	}
 
-	if mouseOverTarget != nil {
-		return
-	}
-
 	actors := game.currentScene.QueryAny([]QueryAttribute{queryAttribute_RECEIVES_MOUSE_ENTER_EVENT})
 	mouseActors := make([]*Actor, 0)
 
@@ -141,7 +137,16 @@ func (game *Game) handleMouseEnter(mousePos rl.Vector2) {
 		return mouseActors[i].GetWindowPosition().Z > mouseActors[j].GetWindowPosition().Z
 	})
 
-	mouseOverTarget = mouseActors[0]
+	topTarget := mouseActors[0]
+
+	if mouseOverTarget == topTarget {
+		return
+	} else {
+		if mouseOverTarget != nil {
+			mouseOverTarget.events.onMouseExit()
+		}
+		mouseOverTarget = topTarget
+	}
 
 	mouseOverTarget.events.onMouseEnter()
 }
