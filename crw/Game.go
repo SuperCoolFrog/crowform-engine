@@ -172,15 +172,12 @@ func (game *Game) Shutdown() {
 }
 
 func (game *Game) addSoundToQ(sound rl.Sound) {
-	mog.Verbose("Adding Sound")
 	game.soundQ = append(game.soundQ, sound)
-	mog.Verbose("After: %d", len(game.soundQ))
 }
 
 func (game *Game) playAllSounds() {
 	for i := range game.soundQ {
 		if i < len(game.soundQ) {
-			mog.Verbose("Playing Sound: %d", i)
 			rl.PlaySound(game.soundQ[i])
 		} else {
 			break
