@@ -13,6 +13,7 @@ type TextBuilder struct {
 	text         string
 	fontSize     float32
 	spacing      float32
+	isCustom     bool
 }
 
 func BuildText() *TextBuilder {
@@ -23,6 +24,7 @@ func BuildText() *TextBuilder {
 		color:        rl.White,
 		fontSize:     16,
 		spacing:      1,
+		isCustom:     false,
 	}
 }
 
@@ -48,6 +50,10 @@ func (builder *TextBuilder) WithFontSize(fontSize float32) *TextBuilder {
 }
 func (builder *TextBuilder) WithSpacing(spacing float32) *TextBuilder {
 	builder.spacing = spacing
+	return builder
+}
+func (builder *TextBuilder) WithIsCustom(isCustom bool) *TextBuilder {
+	builder.isCustom = isCustom
 	return builder
 }
 

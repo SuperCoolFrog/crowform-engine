@@ -74,7 +74,7 @@ func UnloadTextureCache() {
 /** Fonts **/
 var fonts map[string]rl.Font = make(map[string]rl.Font)
 
-func GetFont(fontName string, fontSize float32) rl.Font {
+func GetFont(fontName string, fontSize float32, isCustom bool) rl.Font {
 	key := fmt.Sprintf("%s::%f", fontName, fontSize)
 	if font, ok := fonts[key]; ok {
 		return font
@@ -87,8 +87,12 @@ func GetFont(fontName string, fontSize float32) rl.Font {
 	exPath := filepath.Dir(ex)
 	fullPath := fmt.Sprintf("%s%s%s%s%s", exPath, string(os.PathSeparator), GetSetting[string](SettingName_AssetDirectory), string(os.PathSeparator), fontName)
 
-	// nuFont := rl.LoadFont(fullPath) // Loades 32 by default
-	nuFont := rl.LoadFontEx(fullPath, int32(tools.TruncFloat32(fontSize)), nil, 0) // Could not get to load
+	var nuFont rl.Font
+	if isCustom {
+		nuFont = rl.LoadFont(fullPath) // Loades 32 by default
+	} else {
+		nuFont = rl.LoadFontEx(fullPath, int32(tools.TruncFloat32(fontSize)), nil, 0) // Could not get to load
+	}
 
 	fonts[key] = nuFont
 

@@ -34,7 +34,11 @@ func (text *Text) update() {
 func (text *Text) draw() {
 	pos := text.GetWindowPos()
 	font := text.GetFont()
-	rl.DrawTextEx(*font, text.text, pos, text.fontSize, text.spacing, text.color)
+	if text.isCustom {
+		rl.DrawTextEx(*font, text.text, pos, text.fontSize, text.spacing, rl.White)
+	} else {
+		rl.DrawTextEx(*font, text.text, pos, text.fontSize, text.spacing, text.color)
+	}
 }
 
 func (text *Text) GetTextSize() rl.Vector2 {
@@ -44,7 +48,7 @@ func (text *Text) GetTextSize() rl.Vector2 {
 
 func (text *Text) GetFont() *rl.Font {
 	if text.font == nil {
-		font := cache.GetFont(text.fontFileName, text.fontSize)
+		font := cache.GetFont(text.fontFileName, text.fontSize, text.isCustom)
 		text.font = &font
 	}
 
