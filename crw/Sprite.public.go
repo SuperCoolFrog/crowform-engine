@@ -47,3 +47,6 @@ func (me *Sprite) SetFlipHorizontal(isFlipped bool) {
 func (me *Sprite) SetFlipVertically(isFlipped bool) {
 	me.flippedV = isFlipped
 }
+func (me *Sprite) SetTint(color rl.Color) {
+	me.colorTint = color
+}
