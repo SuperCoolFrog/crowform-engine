@@ -30,6 +30,7 @@ type Game struct {
 	hasInitAudio   bool
 	hasLoadedMusic bool
 	currentMusic   rl.Music
+	isMuted        bool
 
 	soundQ []rl.Sound
 }
@@ -76,6 +77,7 @@ func (builder *GameBuilder) Build() *Game {
 		paused:       false,
 		close:        false,
 		soundQ:       make([]rl.Sound, 0),
+		isMuted:      false,
 	}
 }
 
@@ -172,6 +174,9 @@ func (game *Game) Shutdown() {
 }
 
 func (game *Game) addSoundToQ(sound rl.Sound) {
+	if game.isMuted {
+		return
+	}
 	game.soundQ = append(game.soundQ, sound)
 }
 

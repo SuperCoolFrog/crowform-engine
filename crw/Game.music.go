@@ -12,6 +12,10 @@ import (
 )
 
 func (game *Game) PlayWav(filename string) {
+	if game.isMuted {
+		return
+	}
+
 	if !game.hasInitAudio {
 		rl.InitAudioDevice()
 		game.hasInitAudio = true
@@ -45,4 +49,9 @@ func (game *Game) UnloadMusic() {
 		rl.UnloadMusicStream(game.currentMusic)
 		game.hasLoadedMusic = false
 	}
+}
+
+func (game *Game) MuteAll() {
+	game.isMuted = true
+	game.UnloadMusic()
 }
