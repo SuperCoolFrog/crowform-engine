@@ -31,6 +31,8 @@ type Game struct {
 	hasLoadedMusic bool
 	currentMusic   rl.Music
 	isMuted        bool
+	musicVolume    float32
+	soundVolume    float32
 
 	soundQ []rl.Sound
 }
@@ -78,6 +80,8 @@ func (builder *GameBuilder) Build() *Game {
 		close:        false,
 		soundQ:       make([]rl.Sound, 0),
 		isMuted:      false,
+		musicVolume:  0,
+		soundVolume:  0,
 	}
 }
 
@@ -183,7 +187,9 @@ func (game *Game) addSoundToQ(sound rl.Sound) {
 func (game *Game) playAllSounds() {
 	for i := range game.soundQ {
 		if i < len(game.soundQ) {
-			rl.PlaySound(game.soundQ[i])
+			sound := game.soundQ[i]
+			rl.SetSoundVolume(sound, game.soundVolume)
+			rl.PlaySound(sound)
 		} else {
 			break
 		}

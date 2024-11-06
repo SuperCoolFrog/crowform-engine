@@ -39,7 +39,7 @@ func (game *Game) PlayWav(filename string) {
 
 	game.currentMusic = rl.LoadMusicStream(fullPath)
 	game.hasLoadedMusic = true
-	rl.SetMusicVolume(game.currentMusic, 0.35)
+	rl.SetMusicVolume(game.currentMusic, game.musicVolume)
 	rl.PlayMusicStream(game.currentMusic)
 	// rl.ResumeMusicStream(game.currentMusic)
 }
@@ -49,6 +49,25 @@ func (game *Game) UnloadMusic() {
 		rl.UnloadMusicStream(game.currentMusic)
 		game.hasLoadedMusic = false
 	}
+}
+
+// Between 0 - 1
+func (game *Game) SetMusicVolume(volume float32) {
+	game.musicVolume = volume
+	if game.hasLoadedMusic {
+		rl.SetMusicVolume(game.currentMusic, game.musicVolume)
+	}
+}
+func (game *Game) GetMusicVolume() float32 {
+	return game.musicVolume
+}
+
+// Between 0 - 1
+func (game *Game) SetSoundsVolume(volume float32) {
+	game.soundVolume = volume
+}
+func (game *Game) GetSoundVolume() float32 {
+	return game.soundVolume
 }
 
 func (game *Game) MuteAll() {
