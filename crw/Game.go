@@ -8,12 +8,24 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+type GameStateEventKey string
+
+const (
+	GAME_EVENT__WINDOW_SIZE_CHANGE        GameStateEventKey = "GAME_EVENT__WINDOW_SIZE_CHANGE"
+	GAME_EVENT__WINDOW_FULLSCREEN_TOGGLED GameStateEventKey = "GAME_EVENT__WINDOW_FULLSCREEN_TOGGLED"
+)
+
 type GameBuilder struct {
 	windowName   string
 	windowWidth  int32
 	windowHeight int32
 
 	assetDirectory string
+}
+
+type gameSubListener struct {
+	id      int
+	handler func()
 }
 
 type Game struct {
@@ -35,6 +47,9 @@ type Game struct {
 	soundVolume    float32
 
 	soundQ []rl.Sound
+
+	lastSubId   int
+	subscribers map[GameStateEventKey][]gameSubListener
 }
 
 func BuildGame() *GameBuilder {
@@ -82,6 +97,7 @@ func (builder *GameBuilder) Build() *Game {
 		isMuted:      false,
 		musicVolume:  0,
 		soundVolume:  0,
+		subscribers:  make(map[GameStateEventKey][]gameSubListener),
 	}
 }
 
@@ -163,6 +179,7 @@ func (game *Game) GoToScene(sceneId SceneUniqId) {
 
 	game.currentScene = nextScene
 	game.currentScene.Start()
+	game.currentScene.inScene = true
 }
 
 func (game *Game) endScene() {
@@ -170,6 +187,7 @@ func (game *Game) endScene() {
 		return
 	}
 	game.currentScene.End()
+	game.currentScene.inScene = false
 	game.currentScene = nil
 }
 
@@ -196,4 +214,26 @@ func (game *Game) playAllSounds() {
 	}
 
 	game.soundQ = nil
+}
+
+func (game *Game) SetWindowSize(width int, height int) {
+	rl.SetWindowSize(width, height)
+	game.windowWidth = int32(width)
+	game.windowHeight = int32(height)
+
+	game.publish(GAME_EVENT__WINDOW_SIZE_CHANGE)
+}
+
+func (game *Game) SetFullScreen(fullScreen bool) {
+	if rl.IsWindowFullscreen() && !fullScreen {
+		rl.ToggleFullscreen()
+		game.publish(GAME_EVENT__WINDOW_FULLSCREEN_TOGGLED)
+		return
+	}
+
+	if !rl.IsWindowFullscreen() && fullScreen {
+		rl.ToggleFullscreen()
+		game.publish(GAME_EVENT__WINDOW_FULLSCREEN_TOGGLED)
+		return
+	}
 }

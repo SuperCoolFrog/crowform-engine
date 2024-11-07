@@ -22,21 +22,26 @@ type Scene struct {
 	onStart      func(scene *Scene)
 	onEnd        func(scene *Scene)
 	mousePointer *Actor
+	inScene      bool
 }
 
 type SceneBuilder struct {
-	parentGame *Game
-	sceneId    SceneUniqId
-	onStart    func(scene *Scene)
-	onEnd      func(scene *Scene)
+	parentGame           *Game
+	sceneId              SceneUniqId
+	onStart              func(scene *Scene)
+	onEnd                func(scene *Scene)
+	callEndWhenResized   bool
+	callStartWhenResized bool
 }
 
 func BuildScene(sceneId SceneUniqId, game *Game) *SceneBuilder {
 	return &SceneBuilder{
-		sceneId:    sceneId,
-		parentGame: game,
-		onStart:    func(scene *Scene) {},
-		onEnd:      func(scene *Scene) {},
+		sceneId:              sceneId,
+		parentGame:           game,
+		onStart:              func(scene *Scene) {},
+		onEnd:                func(scene *Scene) {},
+		callEndWhenResized:   false,
+		callStartWhenResized: false,
 	}
 }
 
@@ -44,9 +49,20 @@ func (builder *SceneBuilder) WithOnStart(onStart func(scene *Scene)) *SceneBuild
 	builder.onStart = onStart
 	return builder
 }
+func (builder *SceneBuilder) WithOnStartAndResize(onStart func(scene *Scene)) *SceneBuilder {
+	builder.onStart = onStart
+	builder.callStartWhenResized = true
+	return builder
+}
 
 func (builder *SceneBuilder) WithOnEnd(onEnd func(scene *Scene)) *SceneBuilder {
 	builder.onEnd = onEnd
+	return builder
+}
+
+func (builder *SceneBuilder) WithOnEndOrResized(onEnd func(scene *Scene)) *SceneBuilder {
+	builder.onEnd = onEnd
+	builder.callEndWhenResized = true
 	return builder
 }
 
@@ -63,9 +79,24 @@ func (builder *SceneBuilder) Build() *Scene {
 		paused:     false,
 		onStart:    builder.onStart,
 		onEnd:      builder.onEnd,
+		inScene:    false,
 	}
 
 	builder.parentGame.AddScene(nuScene)
+
+	builder.parentGame.subscribe(GAME_EVENT__WINDOW_SIZE_CHANGE, func() {
+		nuScene.SetWidth(float32(nuScene.parentGame.windowWidth))
+		nuScene.SetHeight(float32(nuScene.parentGame.windowHeight))
+		if builder.callStartWhenResized {
+			if builder.callEndWhenResized {
+				nuScene.onEnd(nuScene)
+				nuScene.inScene = false
+			}
+
+			nuScene.onStart(nuScene)
+			nuScene.inScene = true
+		}
+	})
 
 	return nuScene
 }
