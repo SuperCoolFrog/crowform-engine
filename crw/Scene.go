@@ -169,3 +169,5 @@ func (scene *Scene) ChangeMouseTexture(sprite *Sprite) {
 func (scene *Scene) GetGame() *Game {
 	return scene.parentGame
 }
+
+func (scene *Scene) OnWindowSizeChange() {}

@@ -112,6 +112,10 @@ func (game *Game) Start() {
 
 	rl.InitWindow(game.windowWidth, game.windowHeight, game.windowName)
 
+	if !rl.IsWindowFullscreen() {
+		rl.ToggleFullscreen()
+	}
+
 	cache.RunPreload()
 
 	rl.SetExitKey(0) // Unsets escape to close
