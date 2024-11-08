@@ -16,9 +16,10 @@ const (
 )
 
 type GameBuilder struct {
-	windowName   string
-	windowWidth  int32
-	windowHeight int32
+	windowName     string
+	windowWidth    int32
+	windowHeight   int32
+	initFullscreen bool
 
 	assetDirectory string
 }
@@ -29,9 +30,10 @@ type gameSubListener struct {
 }
 
 type Game struct {
-	windowName   string
-	windowWidth  int32
-	windowHeight int32
+	windowName     string
+	windowWidth    int32
+	windowHeight   int32
+	initFullscreen bool
 
 	scenes        map[SceneUniqId]*Scene
 	currentScene  *Scene
@@ -55,6 +57,7 @@ type Game struct {
 func BuildGame() *GameBuilder {
 	return &GameBuilder{
 		assetDirectory: "assets",
+		initFullscreen: true,
 	}
 }
 
@@ -65,6 +68,10 @@ func (builder *GameBuilder) WithWindowName(name string) *GameBuilder {
 func (builder *GameBuilder) WithDimensions(width int32, height int32) *GameBuilder {
 	builder.windowWidth = width
 	builder.windowHeight = height
+	return builder
+}
+func (builder *GameBuilder) WithFullscreen(fullscreen bool) *GameBuilder {
+	builder.initFullscreen = fullscreen
 	return builder
 }
 func (builder *GameBuilder) WithAssetDirectory(directoryName string) *GameBuilder {
@@ -87,17 +94,18 @@ func (builder *GameBuilder) Build() *Game {
 	cache.SetSetting(cache.SettingName_AssetDirectory, builder.assetDirectory)
 
 	return &Game{
-		windowName:   builder.windowName,
-		windowWidth:  builder.windowWidth,
-		windowHeight: builder.windowHeight,
-		scenes:       make(map[SceneUniqId]*Scene),
-		paused:       false,
-		close:        false,
-		soundQ:       make([]rl.Sound, 0),
-		isMuted:      false,
-		musicVolume:  0,
-		soundVolume:  0,
-		subscribers:  make(map[GameStateEventKey][]gameSubListener),
+		windowName:     builder.windowName,
+		windowWidth:    builder.windowWidth,
+		windowHeight:   builder.windowHeight,
+		initFullscreen: builder.initFullscreen,
+		scenes:         make(map[SceneUniqId]*Scene),
+		paused:         false,
+		close:          false,
+		soundQ:         make([]rl.Sound, 0),
+		isMuted:        false,
+		musicVolume:    0,
+		soundVolume:    0,
+		subscribers:    make(map[GameStateEventKey][]gameSubListener),
 	}
 }
 
@@ -112,7 +120,9 @@ func (game *Game) Start() {
 
 	rl.InitWindow(game.windowWidth, game.windowHeight, game.windowName)
 
-	if !rl.IsWindowFullscreen() {
+	if !rl.IsWindowFullscreen() && game.initFullscreen {
+		rl.ToggleFullscreen()
+	} else if rl.IsWindowFullscreen() && !game.initFullscreen {
 		rl.ToggleFullscreen()
 	}
 
