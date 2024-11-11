@@ -7,8 +7,13 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+type SceneEventKey = string
+
 const (
 	SCENE_MOUSE_ZINDEX = 1000
+
+	// Publishes when window size changes
+	SCENE_EVENT__WINDOW_SIZE_CHANGE SceneEventKey = "SCENE_EVENT__WINDOW_SIZE_CHANGE"
 )
 
 type SceneUniqId string
@@ -96,6 +101,8 @@ func (builder *SceneBuilder) Build() *Scene {
 			nuScene.onStart(nuScene)
 			nuScene.inScene = true
 		}
+
+		nuScene.Publish(SCENE_EVENT__WINDOW_SIZE_CHANGE)
 	})
 
 	return nuScene
