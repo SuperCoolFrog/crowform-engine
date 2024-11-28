@@ -83,7 +83,7 @@ func (sprite *Sprite) setTextureOpacity(inOpacity float64) {
 	// Modify the alpha channel for each pixel
 	end := int(image.Width * image.Height)
 	for i := 0; i < end; i++ {
-		pixels[i].A = uint8(255 * opacity)
+		pixels[i].A = uint8(float64(pixels[i].A) * opacity)
 	}
 
 	// Update the texture with the new image data

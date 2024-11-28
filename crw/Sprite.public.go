@@ -50,3 +50,7 @@ func (me *Sprite) SetFlipVertically(isFlipped bool) {
 func (me *Sprite) SetTint(color rl.Color) {
 	me.colorTint = color
 }
+
+func (me *Sprite) SetOpacity(opacity float64) {
+	me.setTextureOpacity(opacity)
+}
