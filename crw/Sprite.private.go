@@ -30,8 +30,15 @@ func (sprite *Sprite) draw() {
 	}
 
 	if sprite.hasShader {
-		rl.BeginShaderMode(*sprite.shader)
-		rl.DrawTexturePro(*sprite.getCachedTexture(), srcRect, destRect, sprite.Origin, sprite.rotation, sprite.colorTint)
+		shader := *sprite.shader
+
+		rl.BeginShaderMode(shader)
+
+		sprite.updateShader(shader)
+		sprite.shader = &shader
+
+		rl.DrawTexture(*sprite.getCachedTexture(), 0, 0, rl.White)
+
 		rl.EndShaderMode()
 		return
 	}

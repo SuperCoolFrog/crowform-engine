@@ -16,8 +16,9 @@ type SpriteBuilder struct {
 	colorTint       rl.Color
 	hasShader       bool
 	shaderFileName  string
-	initShader      func(shader rl.Shader)
+	initShader      func(shader *rl.Shader) rl.Shader
 	updateShader    func(shader rl.Shader)
+	useBlankTexture bool
 }
 
 type Sprite struct {
@@ -39,7 +40,7 @@ func BuildSprite() *SpriteBuilder {
 		DestRect:        rl.Rectangle{X: 0, Y: 0, Width: 0, Height: 0},
 		rotation:        0,
 		colorTint:       rl.White,
-		initShader:      func(shader rl.Shader) {},
+		initShader:      func(shader *rl.Shader) rl.Shader { return *shader },
 		updateShader:    func(shader rl.Shader) {},
 	}
 }
@@ -72,12 +73,16 @@ func (builder *SpriteBuilder) WithShader(shaderFileName string) *SpriteBuilder {
 	builder.hasShader = true
 	return builder
 }
-func (builder *SpriteBuilder) WithInitShader(init func(rl.Shader)) *SpriteBuilder {
+func (builder *SpriteBuilder) WithInitShader(init func(*rl.Shader) rl.Shader) *SpriteBuilder {
 	builder.initShader = init
 	return builder
 }
 func (builder *SpriteBuilder) WithUpdateShader(update func(rl.Shader)) *SpriteBuilder {
 	builder.updateShader = update
+	return builder
+}
+func (builder *SpriteBuilder) WithBlankTexture() *SpriteBuilder {
+	builder.useBlankTexture = true
 	return builder
 }
 
@@ -94,9 +99,17 @@ func (builder *SpriteBuilder) Build() *Sprite {
 	sprite.onAnimationComplete = func() {}
 
 	cache.QueueForPreload(func() {
-		sprite.getCachedTexture()
+		if builder.useBlankTexture {
+			blankRenderTexture := rl.LoadRenderTexture(int32(sprite.DestRect.Width), int32(sprite.DestRect.Height))
+			sprite.texture = &blankRenderTexture.Texture
+		} else {
+			sprite.getCachedTexture()
+		}
+
 		if sprite.hasShader {
-			sprite.getCachedShader()
+			shader := sprite.getCachedShader()
+			initedShader := sprite.initShader(shader)
+			sprite.shader = &initedShader
 		}
 	})
 

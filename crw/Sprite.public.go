@@ -54,3 +54,11 @@ func (me *Sprite) SetTint(color rl.Color) {
 func (me *Sprite) SetOpacity(opacity float64) {
 	me.setTextureOpacity(opacity)
 }
+
+func (me *Sprite) GetTexture2d() rl.Texture2D {
+	return *me.getCachedTexture()
+}
+
+func (me *Sprite) SetTexture2d(texture *rl.Texture2D) {
+	me.texture = texture
+}
