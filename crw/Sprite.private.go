@@ -29,6 +29,13 @@ func (sprite *Sprite) draw() {
 		srcRect.Height *= -1
 	}
 
+	if sprite.hasShader {
+		rl.BeginShaderMode(*sprite.shader)
+		rl.DrawTexturePro(*sprite.getCachedTexture(), srcRect, destRect, sprite.Origin, sprite.rotation, sprite.colorTint)
+		rl.EndShaderMode()
+		return
+	}
+
 	rl.DrawTexturePro(*sprite.getCachedTexture(), srcRect, destRect, sprite.Origin, sprite.rotation, sprite.colorTint)
 }
 
@@ -44,6 +51,15 @@ func (sprite *Sprite) getCachedTexture() *rl.Texture2D {
 	}
 
 	return sprite.texture
+}
+
+func (sprite *Sprite) getCachedShader() *rl.Shader {
+	if sprite.shader == nil {
+		shader := cache.GetShader(sprite.shaderFileName)
+		sprite.shader = &shader
+	}
+
+	return sprite.shader
 }
 
 func (sprite *Sprite) getTexture() rl.Texture2D {
@@ -63,6 +79,8 @@ func (sprite *Sprite) addToUpdateQueue(item func()) {
 	sprite.queueForUpdate = append(sprite.queueForUpdate, item)
 }
 
+// Deprecated: DO NOT USE!!
+// This shit is slow; just use SetTint and change alpha
 func (sprite *Sprite) setTextureOpacity(inOpacity float64) {
 	opacity := inOpacity
 	// Ensure opacity is between 0.0f and 1.0f

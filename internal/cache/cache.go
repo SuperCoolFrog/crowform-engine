@@ -108,3 +108,25 @@ func UnloadFontsCache() {
 		delete(fonts, k)
 	}
 }
+
+// Shaders
+var shaders map[string]rl.Shader = make(map[string]rl.Shader)
+
+func GetShader(filename string) rl.Shader {
+	if shader, ok := shaders[filename]; ok {
+		return shader
+	}
+
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+	fullPath := fmt.Sprintf("%s%s%s%s%s", exPath, string(os.PathSeparator), GetSetting[string](SettingName_AssetDirectory), string(os.PathSeparator), filename)
+
+	nuShader := rl.LoadShader("", fullPath)
+
+	shaders[filename] = nuShader
+
+	return nuShader
+}

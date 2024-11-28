@@ -14,6 +14,10 @@ type SpriteBuilder struct {
 	DestRect        rl.Rectangle
 	rotation        float32
 	colorTint       rl.Color
+	hasShader       bool
+	shaderFileName  string
+	initShader      func(shader rl.Shader)
+	updateShader    func(shader rl.Shader)
 }
 
 type Sprite struct {
@@ -21,6 +25,7 @@ type Sprite struct {
 	spriteAnimation
 	texture        *rl.Texture2D
 	parent         *Actor
+	shader         *rl.Shader
 	queueForUpdate []func()
 	flippedH       bool
 	flippedV       bool
@@ -34,6 +39,8 @@ func BuildSprite() *SpriteBuilder {
 		DestRect:        rl.Rectangle{X: 0, Y: 0, Width: 0, Height: 0},
 		rotation:        0,
 		colorTint:       rl.White,
+		initShader:      func(shader rl.Shader) {},
+		updateShader:    func(shader rl.Shader) {},
 	}
 }
 
@@ -60,6 +67,20 @@ func (builder *SpriteBuilder) WithColorTint(color rl.Color) *SpriteBuilder {
 	return builder
 }
 
+func (builder *SpriteBuilder) WithShader(shaderFileName string) *SpriteBuilder {
+	builder.shaderFileName = shaderFileName
+	builder.hasShader = true
+	return builder
+}
+func (builder *SpriteBuilder) WithInitShader(init func(rl.Shader)) *SpriteBuilder {
+	builder.initShader = init
+	return builder
+}
+func (builder *SpriteBuilder) WithUpdateShader(update func(rl.Shader)) *SpriteBuilder {
+	builder.updateShader = update
+	return builder
+}
+
 func (builder *SpriteBuilder) Build() *Sprite {
 	sprite := &Sprite{
 		SpriteBuilder: *builder,
@@ -74,6 +95,9 @@ func (builder *SpriteBuilder) Build() *Sprite {
 
 	cache.QueueForPreload(func() {
 		sprite.getCachedTexture()
+		if sprite.hasShader {
+			sprite.getCachedShader()
+		}
 	})
 
 	return sprite
