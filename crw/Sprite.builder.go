@@ -30,6 +30,7 @@ type Sprite struct {
 	queueForUpdate []func()
 	flippedH       bool
 	flippedV       bool
+	shaderHasInit  bool
 }
 
 func BuildSprite() *SpriteBuilder {
@@ -42,6 +43,7 @@ func BuildSprite() *SpriteBuilder {
 		colorTint:       rl.White,
 		initShader:      func(shader *rl.Shader) rl.Shader { return *shader },
 		updateShader:    func(shader rl.Shader) {},
+		hasShader:       false,
 	}
 }
 
@@ -89,6 +91,7 @@ func (builder *SpriteBuilder) WithBlankTexture() *SpriteBuilder {
 func (builder *SpriteBuilder) Build() *Sprite {
 	sprite := &Sprite{
 		SpriteBuilder: *builder,
+		shaderHasInit: false,
 	}
 	sprite.animationType = spriteAnimType_NONE
 	sprite.animationTime = time.Duration(0)
